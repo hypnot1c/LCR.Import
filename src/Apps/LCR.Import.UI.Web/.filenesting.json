@@ -1,0 +1,34 @@
+{
+  "help": "https://go.microsoft.com/fwlink/?linkid=866610",
+  "dependentFileProviders":
+  {
+    "add":
+    {
+      "fileToFile":
+      {
+        "add":
+        {
+          "app-config-test.ts": [
+            "app-config.ts"
+          ],
+          "app-config-prod.ts": [
+            "app-config.ts"
+          ]
+        }
+      },
+      "extensionToExtension":
+      {
+        "add":
+        {
+          ".ts": [
+            ".html"
+          ],
+          ".scss": [
+            ".html"
+          ]
+        }
+      }
+    }
+
+  }
+}

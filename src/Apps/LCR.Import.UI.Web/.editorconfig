@@ -1,0 +1,11 @@
+# EditorConfig is awesome: https://EditorConfig.org
+# Settings are taken from https://github.com/airbnb/javascript
+[*.{ts,js,scss,html,cs,cshtml}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+end_of_line = crlf
+# editorconfig-tools is unable to ignore longs strings or urls
+max_line_length = null

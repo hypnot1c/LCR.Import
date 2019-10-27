@@ -1,0 +1,51 @@
+@model bool
+
+@section styles {
+  <% for (key in htmlWebpackPlugin.files.css) { %><%
+  if (htmlWebpackPlugin.files.cssIntegrity) { %>
+  <link type="text/css" href="<%= htmlWebpackPlugin.files.css[key] %>"
+        rel="stylesheet"
+        integrity="<%= htmlWebpackPlugin.files.cssIntegrity[key] %>"
+        crossorigin="<%= webpackConfig.output.crossOriginLoading %>" /><%
+  } else { %>
+  <link type="text/css" href="<%= htmlWebpackPlugin.files.css[key] %>" rel="stylesheet" /><%
+  } %><%
+  } %>
+}
+<% if (htmlWebpackPlugin.files.sprites) { %>
+  <% for (var spriteFileName in htmlWebpackPlugin.files.sprites) { %>
+<div style="display: none;">
+  <%= htmlWebpackPlugin.files.sprites[spriteFileName] %>
+</div>
+  <% } %>
+<% } %>
+<div aurelia-app="main" id="main-app-wrapper"></div>
+@section scripts {
+  <script>
+    if (!Object.entries) {
+      Object.entries = function (obj) {
+        var ownProps = Object.keys(obj),
+          i = ownProps.length,
+          resArray = new Array(i); // preallocate the Array
+        while (i--) {
+          resArray[i] = [ownProps[i], obj[ownProps[i]]];
+        }
+
+        return resArray;
+      }
+    }
+  </script>
+}
+<% for (key in htmlWebpackPlugin.options.vendorFileNames) { %>
+<script src="/dist/<%= htmlWebpackPlugin.options.vendorFileNames[key] %>"></script>
+<% } %>
+<% for (key in htmlWebpackPlugin.files.chunks) { %><%
+      if (htmlWebpackPlugin.files.jsIntegrity) { %>
+<script src="<%= htmlWebpackPlugin.files.chunks[key].entry %>"
+        type="text/javascript"
+        integrity="<%= htmlWebpackPlugin.files.jsIntegrity[htmlWebpackPlugin.files.js.indexOf(htmlWebpackPlugin.files.chunks[key].entry)] %>"
+        crossorigin="<%= webpackConfig.output.crossOriginLoading %>"></script><%
+      } else { %>
+<script src="<%= htmlWebpackPlugin.files.chunks[key].entry %>" type="text/javascript"></script><%
+      } %><%
+    } %>
