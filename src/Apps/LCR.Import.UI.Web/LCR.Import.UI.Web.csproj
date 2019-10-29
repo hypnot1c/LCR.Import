@@ -21,6 +21,10 @@
     <None Remove="src\config\state\initial-state.ts" />
     <None Remove="src\main.ts" />
     <None Remove="src\pages\main.ts" />
+    <None Remove="src\services\data-service\abstractions\i-api-urls.ts" />
+    <None Remove="src\services\data-service\abstractions\index.ts" />
+    <None Remove="src\services\data-service\api-urls.ts" />
+    <None Remove="src\services\data-service\data-service.ts" />
     <None Remove="src\shared\abstractions\base-object.ts" />
     <None Remove="src\shared\abstractions\index.ts" />
     <None Remove="src\shared\components\abstractions\base-component.ts" />
@@ -71,6 +75,10 @@
     <TypeScriptCompile Include="src\config\state\initial-state.ts" />
     <TypeScriptCompile Include="src\main.ts" />
     <TypeScriptCompile Include="src\pages\main.ts" />
+    <TypeScriptCompile Include="src\services\data-service\abstractions\i-api-urls.ts" />
+    <TypeScriptCompile Include="src\services\data-service\abstractions\index.ts" />
+    <TypeScriptCompile Include="src\services\data-service\api-urls.ts" />
+    <TypeScriptCompile Include="src\services\data-service\data-service.ts" />
     <TypeScriptCompile Include="src\shared\abstractions\base-object.ts" />
     <TypeScriptCompile Include="src\shared\abstractions\index.ts" />
     <TypeScriptCompile Include="src\shared\components\abstractions\base-component.ts" />
