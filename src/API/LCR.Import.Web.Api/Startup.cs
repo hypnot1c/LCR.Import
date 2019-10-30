@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 namespace LCR.Import.Web.Api
 {
@@ -49,6 +50,8 @@ namespace LCR.Import.Web.Api
     /// <param name="app"></param>
     public void Configure(IApplicationBuilder app)
     {
+      System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
       if (this.HostingEnvironment.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
@@ -76,6 +79,13 @@ namespace LCR.Import.Web.Api
       });
 
       app.UseMvc();
+
+      var storageDirectoryPath = this.Configuration.GetValue<string>("StorageDirectory");
+
+      if (!Directory.Exists(storageDirectoryPath))
+      {
+        Directory.CreateDirectory(storageDirectoryPath);
+      }
     }
   }
 }

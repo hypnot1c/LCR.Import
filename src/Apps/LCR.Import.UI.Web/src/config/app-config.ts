@@ -6,7 +6,7 @@ const appConfig = {
     Environment: Environment.DEV,
     AppHost: appHost,
 
-    ApiHost: "https://localhost:11111"
+    ApiHost: "http://localhost:52414"
 };
 
 export default appConfig;

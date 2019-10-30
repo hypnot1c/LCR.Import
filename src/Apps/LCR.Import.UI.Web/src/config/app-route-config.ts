@@ -8,6 +8,13 @@ let config: RouteConfig[] = [
         moduleId: PLATFORM.moduleName("pages/main"),
         nav: false,
         title: "Welcome"
+    },
+    {
+        route: "proccess-file",
+        name: "proccess-file",
+        moduleId: PLATFORM.moduleName("pages/proccess-file-page"),
+        nav: false,
+        title: "Proccess"
     }
 ];
 

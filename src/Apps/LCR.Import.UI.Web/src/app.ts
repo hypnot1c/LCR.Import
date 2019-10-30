@@ -1,6 +1,7 @@
 import { autoinject } from "aurelia-framework";
 import { Router, RouterConfiguration, NavigationInstruction, RouteConfig } from "aurelia-router";
-import { HttpClient } from "aurelia-fetch-client";
+import { HttpClient as FetchClient } from "aurelia-fetch-client";
+import { HttpClient } from "aurelia-http-client";
 import { Store, logMiddleware, MiddlewarePlacement } from "aurelia-store";
 import { pluck } from "rxjs/operators";
 import cloneDeep from "clone-deep";
@@ -17,7 +18,8 @@ import { BasePageComponent } from "shared/components";
 export class App extends BasePageComponent {
     constructor(
         protected router: Router,
-        protected http: HttpClient,
+        protected http: FetchClient,
+        protected httpClient: HttpClient,
         protected store: Store<IAppState>
     ) {
         super("App");
@@ -45,6 +47,10 @@ export class App extends BasePageComponent {
     }
 
     private configureHttpClient() {
+        this.httpClient.configure(c => {
+            c.withBaseUrl(`${appConfig.ApiHost}/`);
+            c.withHeader("Accept", "application/json");
+        });
     }
 
     private async configureState() {
