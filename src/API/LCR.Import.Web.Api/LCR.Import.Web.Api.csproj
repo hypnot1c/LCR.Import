@@ -16,6 +16,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Api.Analyzers" Version="2.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.Server.IIS" Version="2.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
     <PackageReference Include="NLog" Version="4.6.7" />
@@ -25,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.TPM.Context\LCR.TPM.Context.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.TPM.Model\LCR.TPM.Model.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\Helpers\Helpers.AspNet\Helpers.AspNet.csproj" />
   </ItemGroup>
 

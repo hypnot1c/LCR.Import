@@ -1,12 +1,12 @@
 using ExcelDataReader;
+using LCR.Import.Web.Api.Resources;
+using LCR.TPM.Context;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LCR.Import.Web.Api.Controllers
@@ -14,13 +14,16 @@ namespace LCR.Import.Web.Api.Controllers
   public class ImportController : BaseApiController
   {
     public ImportController(
+      TPMContext tpmCtx,
       ILogger<ImportController> logger,
       IConfiguration config
       ) : base(logger)
     {
+      this.TPMContext = tpmCtx;
       this.StorageDirectoryPath = config.GetValue<string>("StorageDirectory");
     }
 
+    public TPMContext TPMContext { get; }
     public string StorageDirectoryPath { get; }
 
     [HttpGet("{userId:int}")]
@@ -34,7 +37,7 @@ namespace LCR.Import.Web.Api.Controllers
       {
         using (var reader = ExcelReaderFactory.CreateReader(stream))
         {
-          while(!reader.IsClosed && reader.Name != "Направления")
+          while (!reader.IsClosed && reader.Name != "Направления")
           {
             reader.NextResult();
           }
@@ -47,13 +50,19 @@ namespace LCR.Import.Web.Api.Controllers
               {
                 continue;
               }
-              var test = reader.GetString(1);
+
+              var rawData = reader.ToImportRawDataModel();
+
+              this.TPMContext.ImportRawData.Add(rawData);
             }
           } while (reader.NextResult());
         }
       }
+      await this.TPMContext.SaveChangesAsync();
 
-      return Ok();
+      var data = await this.TPMContext.ImportRawData.ToListAsync();
+
+      return Ok(data);
     }
   }
 }

@@ -1,8 +1,12 @@
 using LCR.Import.Web.Api.Resources;
+using LCR.TPM.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.IO;
 
 namespace LCR.Import.Web.Api
@@ -42,6 +46,11 @@ namespace LCR.Import.Web.Api
       services.AddAndConfigureMvc();
 
       services.AddCors();
+
+      services.AddDbContext<TPMContext>(opts =>
+          opts.UseInMemoryDatabase($"{nameof(TPMContext)}_{Guid.NewGuid().ToString()}")
+              .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+      );
     }
 
     /// <summary>
