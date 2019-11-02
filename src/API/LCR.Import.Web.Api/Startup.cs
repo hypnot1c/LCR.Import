@@ -1,3 +1,5 @@
+using LCR.DataService.Abstractions;
+using LCR.DataService.Mock;
 using LCR.Import.Web.Api.Resources;
 using LCR.TPM.Context;
 using Microsoft.AspNetCore.Builder;
@@ -6,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.IO;
 
 namespace LCR.Import.Web.Api
@@ -48,9 +49,15 @@ namespace LCR.Import.Web.Api
       services.AddCors();
 
       services.AddDbContext<TPMContext>(opts =>
-          opts.UseInMemoryDatabase($"{nameof(TPMContext)}_{Guid.NewGuid().ToString()}")
+          opts.UseInMemoryDatabase($"{nameof(TPMContext)}")
               .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
       );
+
+      services.AddScoped<IDataService, MockDataService>();
+
+      services.AddScoped<IProccessFileCommandService<ProccessFileCommand>, ProccessFileCommandService>();
+      services.AddHostedService<ProccessFileCommandHostedService>();
+      services.AddSingleton<IBackgroundQueue<ICommand>, ProccessFileCommandBackgroundQueue>();
     }
 
     /// <summary>

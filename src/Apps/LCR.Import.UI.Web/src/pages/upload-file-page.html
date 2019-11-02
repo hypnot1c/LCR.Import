@@ -1,0 +1,22 @@
+<template>
+  <article>
+    <section>
+      <div>
+        <span>Коммутатор</span>
+        <select value.bind="selectedSwitch">
+          <option model.bind="null">Выберите...</option>
+          <option repeat.for="switch of switchList"
+                  model.bind="switch.id">
+            ${switch.name}
+          </option>
+        </select>
+      </div>
+      <div>
+        <input type="file" value="Загрузить новый файл" files.bind="files" change.trigger="uploadFile()" />
+      </div>
+      <div>
+        ${uploadStatus}
+      </div>
+    </section>
+  </article>
+</template>

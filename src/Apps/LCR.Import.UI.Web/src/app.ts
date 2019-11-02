@@ -18,7 +18,7 @@ import { BasePageComponent } from "shared/components";
 export class App extends BasePageComponent {
     constructor(
         protected router: Router,
-        protected http: FetchClient,
+        protected fetchClient: FetchClient,
         protected httpClient: HttpClient,
         protected store: Store<IAppState>
     ) {
@@ -47,6 +47,19 @@ export class App extends BasePageComponent {
     }
 
     private configureHttpClient() {
+        this.fetchClient.configure(c => {
+            let defaults: any = {
+                credentials: "same-origin",
+                headers: {
+                    Accept: "application/json",
+                    "X-Requested-With": "Fetch"
+                }
+            };
+
+            c.withBaseUrl(`${appConfig.ApiHost}/`);
+            c.withDefaults(defaults);
+        });
+
         this.httpClient.configure(c => {
             c.withBaseUrl(`${appConfig.ApiHost}/`);
             c.withHeader("Accept", "application/json");

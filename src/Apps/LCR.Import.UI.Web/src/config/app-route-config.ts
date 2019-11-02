@@ -10,6 +10,14 @@ let config: RouteConfig[] = [
         title: "Welcome"
     },
     {
+        route: "upload-file",
+        name: "upload-file",
+        moduleId: PLATFORM.moduleName("pages/upload-file-page"),
+        nav: false,
+        title: "Upload"
+    },
+
+    {
         route: "proccess-file",
         name: "proccess-file",
         moduleId: PLATFORM.moduleName("pages/proccess-file-page"),
