@@ -32,6 +32,7 @@
     <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.TPM.Context\LCR.TPM.Context.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.TPM.Model\LCR.TPM.Model.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\Helpers\Helpers.AspNet\Helpers.AspNet.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\Validation\LCR.Import.DataValidation\LCR.Import.DataValidation.csproj" />
   </ItemGroup>
 
 </Project>

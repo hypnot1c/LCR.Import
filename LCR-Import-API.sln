@@ -15,11 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LCR.TPM.Model", "src\Buildi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBaseContextExtensions", "src\BuildingBlocks\DataAccess\DataBaseContextExtensions\DataBaseContextExtensions.csproj", "{45D5C103-D2C4-45BE-AE0A-4050720EE353}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCR.DataService.Abstractions", "src\BuildingBlocks\DataAccess\LCR.DataService.Abstractions\LCR.DataService.Abstractions.csproj", "{89F950CA-03D1-4301-B9E2-0FD6AC697F55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LCR.DataService.Abstractions", "src\BuildingBlocks\DataAccess\LCR.DataService.Abstractions\LCR.DataService.Abstractions.csproj", "{89F950CA-03D1-4301-B9E2-0FD6AC697F55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCR.DataService", "src\BuildingBlocks\DataAccess\LCR.DataService\LCR.DataService.csproj", "{346C3B76-7C45-42FB-8AE3-26A07325DE9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LCR.DataService", "src\BuildingBlocks\DataAccess\LCR.DataService\LCR.DataService.csproj", "{346C3B76-7C45-42FB-8AE3-26A07325DE9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCR.DataService.Mock", "src\BuildingBlocks\DataAccess\LCR.DataService.Mock\LCR.DataService.Mock.csproj", "{9EB4C316-4C5A-4228-9867-C11F478F088E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LCR.DataService.Mock", "src\BuildingBlocks\DataAccess\LCR.DataService.Mock\LCR.DataService.Mock.csproj", "{9EB4C316-4C5A-4228-9867-C11F478F088E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCR.Import.DataValidation", "src\BuildingBlocks\Validation\LCR.Import.DataValidation\LCR.Import.DataValidation.csproj", "{E30A79FF-29B6-40A0-859F-D4486A263C6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,12 @@ Global
 		{9EB4C316-4C5A-4228-9867-C11F478F088E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9EB4C316-4C5A-4228-9867-C11F478F088E}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
 		{9EB4C316-4C5A-4228-9867-C11F478F088E}.Testing|Any CPU.Build.0 = Debug|Any CPU
+		{E30A79FF-29B6-40A0-859F-D4486A263C6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E30A79FF-29B6-40A0-859F-D4486A263C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E30A79FF-29B6-40A0-859F-D4486A263C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E30A79FF-29B6-40A0-859F-D4486A263C6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E30A79FF-29B6-40A0-859F-D4486A263C6A}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
+		{E30A79FF-29B6-40A0-859F-D4486A263C6A}.Testing|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +96,7 @@ Global
 		{89F950CA-03D1-4301-B9E2-0FD6AC697F55} = {C7592673-F906-4F05-9486-A206D807461C}
 		{346C3B76-7C45-42FB-8AE3-26A07325DE9D} = {C7592673-F906-4F05-9486-A206D807461C}
 		{9EB4C316-4C5A-4228-9867-C11F478F088E} = {C7592673-F906-4F05-9486-A206D807461C}
+		{E30A79FF-29B6-40A0-859F-D4486A263C6A} = {C7592673-F906-4F05-9486-A206D807461C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A905FA7E-5A86-44E3-A234-C7BA5F93FD42}
