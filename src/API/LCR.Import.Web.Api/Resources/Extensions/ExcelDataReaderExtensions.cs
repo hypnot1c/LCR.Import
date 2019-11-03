@@ -1,5 +1,6 @@
 using ExcelDataReader;
 using LCR.TPM.Model;
+using System;
 
 namespace LCR.Import.Web.Api.Resources
 {
@@ -28,9 +29,24 @@ namespace LCR.Import.Web.Api.Resources
       return result;
     }
 
+    public static ImportMappedDataModel ToMappedDataModel(this ImportRawDataModel rawData)
+    {
+      var result = new ImportMappedDataModel();
+
+      result.UploadHistoryId = rawData.UploadHistoryId;
+      result.ImportRawData = rawData;
+      result.ImportRawDataId = rawData.Id;
+      result.FileDirection = rawData.Direction[0];
+      result.FileDateOpen = DateTime.Parse(rawData.DateOpen);
+      result.FileDateClose = String.IsNullOrEmpty(rawData.DateClose) ? null : (DateTime?)DateTime.Parse(rawData.DateClose);
+
+      rawData.ImportMappedData = result;
+      return result;
+    }
+
     public static string GetAsString(this IExcelDataReader reader, int index)
     {
-      return reader.GetValue(index)?.ToString();
+      return reader.GetValue(index)?.ToString().Trim();
     }
   }
 }

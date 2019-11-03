@@ -1,9 +1,9 @@
 <template>
   <article>
-    <section>
-      <div>
-        <span>Коммутатор</span>
-        <select value.bind="selectedSwitch">
+    <section class="uk-padding-small uk-background-muted">
+      <div class="uk-width-1-3">
+        <span class="uk-text-normal">Коммутатор</span>
+        <select class="uk-select" value.bind="selectedSwitch">
           <option model.bind="null">Выберите...</option>
           <option repeat.for="switch of switchList"
                   model.bind="switch.id">
@@ -11,12 +11,66 @@
           </option>
         </select>
       </div>
-      <div>
-        <input type="file" value="Загрузить новый файл" files.bind="files" change.trigger="uploadFile()" />
+      <div show.bind="!files" class="js-upload uk-placeholder uk-text-center">
+        <span uk-icon="icon: upload"></span>
+        <span class="uk-text-middle">Перетащите сюда файл или</span>
+        <div uk-form-custom>
+          <input type="file" ref="fUpload" style="display: none;" files.bind="files" change.trigger="uploadFile()">
+          <span class="uk-link" click.trigger="fUpload.click()">выберите его</span>
+        </div>
       </div>
-      <div>
-        ${uploadStatus}
-      </div>
+      <section show.bind="files">
+        <div uk-spinner></div>
+        <span class="uk-text-normal">${uploadStatus}</span>
+      </section>
+    </section>
+    <section class="uk-overflow-auto">
+      <table class="uk-table uk-table-divider uk-table-striped uk-table-hover">
+        <thead>
+          <tr>
+            <th colspan="10" class="uk-text-center">
+              Данные из файла
+            </th>
+            <th colspan="4" class="uk-text-center">
+              Данные из LCR
+            </th>
+          </tr>
+          <tr>
+            <th>№ строки</th>
+            <th>Транковая группа</th>
+            <th>Оператор-владелец коммутатора</th>
+            <th>Полное наименование оператора</th>
+            <th>Тип направления</th>
+            <th>Исх./Вх.</th>
+            <th>Уровень присоединения оператора</th>
+            <th>Уроверь присоединения Ростелеком</th>
+            <th>Дата начала действия</th>
+            <th>Дата закрытия</th>
+            <th>Carrier</th>
+            <th>Direction</th>
+            <th>ValidFrom</th>
+            <th>ValidUntil</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr repeat.for="entry of uploadResultData">
+            <td>${entry.dataRowId}</td>
+            <td>${entry.channelBundleName}</td>
+            <td>${entry.switchOperatorName}</td>
+            <td>${entry.pairedSwitchOperatorFullName}</td>
+            <td>${entry.directionType}</td>
+            <td>${entry.direction}</td>
+            <td>${entry.operatorsNetworkConnectionLevel}</td>
+            <td>${entry.rTNetworkConnectionLevel}</td>
+            <td>${entry.dateOpen}</td>
+            <td>${entry.dateClose}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </article>
 </template>

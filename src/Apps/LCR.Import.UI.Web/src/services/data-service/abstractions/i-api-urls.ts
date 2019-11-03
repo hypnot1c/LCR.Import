@@ -3,7 +3,8 @@ export interface IApiUrls {
         upload: string
     },
     import: {
-        statusCheck: (historyId: number, userId: number) => string
+        statusCheck: (historyId: number, userId: number) => string,
+        result: (historyId: number, userId: number) => string
     },
     switch: {
         list: string

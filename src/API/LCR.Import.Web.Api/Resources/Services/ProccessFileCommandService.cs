@@ -1,6 +1,7 @@
 using ExcelDataReader;
 using LCR.Import.DataValidation;
 using LCR.TPM.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
@@ -63,17 +64,21 @@ namespace LCR.Import.Web.Api.Resources
               }
               else
               {
+                var mappedData = rawData.ToMappedDataModel();
                 this.TPMContext.ImportRawData.Add(rawData);
+                this.TPMContext.ImportMappedData.Add(mappedData);
               }
             }
           } while (reader.NextResult());
         }
       }
 
-      var historyEntry = await this.TPMContext.ImportHistory.FindAsync(command.ImportHistoryId);
+      var historyEntry = await this.TPMContext.UploadHistory.FindAsync(command.ImportHistoryId);
       historyEntry.Step = TPM.Model.ImportStep.Applied;
 
-      var res = await this.TPMContext.SaveChangesAsync();
+      await this.TPMContext.SaveChangesAsync();
+
+      var typed = await this.TPMContext.ImportMappedData.ToListAsync();
     }
   }
 }

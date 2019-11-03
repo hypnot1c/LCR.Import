@@ -1,3 +1,13 @@
 @import "normalize";
 
+@import "uikit/src/scss/variables-theme.scss";
+@import "uikit/src/scss/mixins-theme.scss";
+@import "uikit/src/scss/uikit-theme.scss";
+
 @include normalize();
+
+
+.js-upload:hover {
+  background-color: rgba(30, 135, 240, .2);
+  transition: background-color 500ms linear;
+}

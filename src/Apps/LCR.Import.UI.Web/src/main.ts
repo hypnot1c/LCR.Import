@@ -1,6 +1,8 @@
 import * as Bluebird from "bluebird";
 import { Aurelia, LogManager, PLATFORM } from "aurelia-framework";
 import { ConsoleAppender } from "aurelia-logging-console";
+import UIkit from 'uikit';
+import Icons from 'uikit/dist/js/uikit-icons';
 import "whatwg-fetch";
 
 import { initialState } from "config/state/initial-state";
@@ -11,6 +13,7 @@ import { Environment } from "config/environment";
 //Configure Bluebird Promises.
 //Note: You may want to use environment-specific configuration.
 Bluebird.config({ warnings: false });
+UIkit.use(Icons);
 
 export async function configure(aurelia: Aurelia) {
     let aureliaConfig = aurelia.use

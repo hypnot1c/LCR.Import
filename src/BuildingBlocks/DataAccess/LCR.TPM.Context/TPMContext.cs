@@ -17,7 +17,8 @@ namespace LCR.TPM.Context
       modelBuilder.UseEntityTypeConfiguration(typeof(TPMContext).GetTypeInfo().Assembly);
     }
 
-    public DbSet<ImportHistoryModel> ImportHistory { get; set; }
+    public DbSet<UploadHistoryModel> UploadHistory { get; set; }
     public DbSet<ImportRawDataModel> ImportRawData { get; set; }
+    public DbSet<ImportMappedDataModel> ImportMappedData { get; set; }
   }
 }

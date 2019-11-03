@@ -36,7 +36,11 @@ export class DataService extends BaseObject {
         checkStatus: async (historyId: number, userId: number) => {
             const resp = await this.fetchClient.fetch(apiUrls.import.statusCheck(historyId, userId));
             return resp.json();
-        }
+        },
+        getResult: async (historyId: number, userId: number) => {
+            const resp = await this.fetchClient.fetch(apiUrls.import.result(historyId, userId));
+            return resp.json();
+        },
     };
 
     switch = {

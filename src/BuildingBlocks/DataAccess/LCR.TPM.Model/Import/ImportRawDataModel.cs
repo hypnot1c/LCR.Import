@@ -4,6 +4,7 @@ namespace LCR.TPM.Model
 {
   public class ImportRawDataModel : BaseModel
   {
+    public UploadHistoryModel UploadHistory { get; set; }
     public int UploadHistoryId { get; set; }
     public string DataRowId { get; set; }
     public string ChannelBundleName { get; set; }
@@ -20,6 +21,6 @@ namespace LCR.TPM.Model
     public string OperatorsNetworkConnectionLevel { get; set; }
     public string RTNetworkConnectionLevel { get; set; }
     public string BranchOffice { get; set; }
-
+    public ImportMappedDataModel ImportMappedData { get; set; }
   }
 }

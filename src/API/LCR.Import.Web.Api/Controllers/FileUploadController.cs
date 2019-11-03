@@ -70,14 +70,14 @@ namespace LCR.Import.Web.Api.Controllers
           fw.Close();
         }
 
-        var history = new ImportHistoryModel();
+        var history = new UploadHistoryModel();
         history.UserId = userId;
         history.FileName = fileName;
         history.SwitchId = 0;
         history.DateUpload = DateTime.Now.Date;
         history.Step = ImportStep.Pending;
 
-        this.TPMContext.ImportHistory.Add(history);
+        this.TPMContext.UploadHistory.Add(history);
         await this.TPMContext.SaveChangesAsync();
 
         var command = new ProccessFileCommand { UserId = userId, ImportHistoryId = history.Id, FilePath = storeFullPath };

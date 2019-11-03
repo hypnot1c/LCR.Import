@@ -19,6 +19,7 @@ export class UploadFilePage extends BasePageComponent {
 
     statusCheckInterval: number;
     uploadStatus: string;
+    uploadResultData: any[];
 
     async activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.switchList = await this.dataService.switch.getList();
@@ -51,6 +52,9 @@ export class UploadFilePage extends BasePageComponent {
             this.statusCheckInterval = null;
 
             this.uploadStatus = "Файл обработан.";
+
+            const resp = await this.dataService.import.getResult(historyId, 1);
+            this.uploadResultData = resp.result;
         }
     }
 
