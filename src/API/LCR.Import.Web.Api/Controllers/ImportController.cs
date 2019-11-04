@@ -1,4 +1,7 @@
+using LCR.Import.Web.Api.Resources;
+using LCR.Import.Web.Api.ViewModels;
 using LCR.TPM.Context;
+using LCR.TPM.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,37 +37,41 @@ namespace LCR.Import.Web.Api.Controllers
     }
 
     [HttpGet("{id}/user/{userId:int}/result")]
-    public async Task<IActionResult> GetResult(decimal id, int userId = 1)
+    public async Task<IActionResult> GetResult(decimal id, int userId = 1, int page = 1, int pageSize = 10)
     {
-      var data = await this.TPMContext.ImportRawData
+      var data = this.TPMContext.ImportRawData
         .Where(d => d.UploadHistoryId == id)
         .Where(d => d.ImportMappedData != null)
         //.Where(ih => ih.UploadHistory.UserId == userId)
-        .Select(d => new
+        .Select(d => new ImportResultViewModel
         {
-          d.DataRowId,
-          d.ChannelBundleName,
-          d.SwitchOperatorName,
-          d.PairedSwitchOperatorFullName,
-          d.DirectionType,
-          d.Direction,
+          DataRowId = d.DataRowId,
+          ChannelBundleName = d.ChannelBundleName,
+          SwitchOperatorName = d.SwitchOperatorName,
+          PairedSwitchOperatorFullName = d.PairedSwitchOperatorFullName,
+          DirectionType = d.DirectionType,
+          Direction = d.Direction,
           OperatorsNetworkConnectionLvl = d.OperatorsNetworkConnectionLevel,
-          d.RTNetworkConnectionLevel,
-          d.DateOpen,
-          d.DateClose,
+          RTNetworkConnectionLevel = d.RTNetworkConnectionLevel,
+          DateOpen = d.DateOpen,
+          DateClose = d.DateClose,
           Fdate = d.ImportMappedData.FileDateOpen
         })
-        .ToListAsync()
+        .AsQueryable()
         ;
 
-      return Ok(new { Status = "Ok", result = data });
+      var result = await PaginatedList<ImportResultViewModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
+
+      return Ok(new { Status = "Ok", result = new { data = result, result.TotalPages, result.Count } });
     }
 
-    [HttpGet("test")]
-    public async Task<IActionResult> Test()
+    [HttpGet("history")]
+    public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10)
     {
-      var data = await this.TPMContext.UploadHistory.ToListAsync();
-      return Ok(new { Status = "Ok", result = data });
+      var data = this.TPMContext.UploadHistory.AsQueryable();
+
+      var result = await PaginatedList<UploadHistoryModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
+      return Ok(new { Status = "Ok", result = new { data = result, result.TotalPages, result.Count }});
     }
   }
 }

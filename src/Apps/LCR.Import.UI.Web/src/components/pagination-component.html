@@ -1,0 +1,24 @@
+<template>
+  <ul class="uk-pagination uk-flex-center" uk-margin>
+    <template if.bind="pageData.currentPageNumber == 1">
+      <li class="uk-disable"><span><span uk-pagination-previous></span></span></li>
+    </template>
+    <template else>
+      <li class="uk-active"><a href="#"><span uk-pagination-previous></span></a></li>
+    </template>
+    <template repeat.for="page of pageMap">
+      <template if.bind="page != '...' && page != pageData.currentPageNumber">
+        <li class="uk-active"><a href="#">${page}</a></li>
+      </template>
+      <template else>
+        <li class="uk-active"><span><span>${page}</span></span></li>
+      </template>
+    </template>
+    <template if.bind="pageData.currentPageNumber == pageData.totalPages">
+      <li class="uk-disable"><span><span uk-pagination-next></span></span></li>
+    </template>
+    <template else>
+      <li class="uk-active"><a href="#"><span uk-pagination-next></span></a></li>
+    </template>
+  </ul>
+</template>

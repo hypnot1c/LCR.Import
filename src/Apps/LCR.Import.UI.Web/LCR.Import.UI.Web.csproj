@@ -14,6 +14,7 @@
   <ItemGroup>
     <None Remove="src\app.ts" />
     <None Remove="src\config.ts" />
+    <None Remove="src\config\app-config-prod.ts" />
     <None Remove="src\config\app-route-config.ts" />
     <None Remove="src\config\environment.ts" />
     <None Remove="src\config\state\abstractions\i-app-state.ts" />
@@ -71,6 +72,8 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="src\app.ts" />
+    <TypeScriptCompile Include="src\components\pagination-component.ts" />
+    <TypeScriptCompile Include="src\config\app-config-prod.ts" />
     <TypeScriptCompile Include="src\config\app-config.ts" />
     <TypeScriptCompile Include="src\config\app-route-config.ts" />
     <TypeScriptCompile Include="src\config\environment.ts" />

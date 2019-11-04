@@ -20,7 +20,6 @@ export abstract class BasePageComponent extends BaseComponent {
     return true;
   }
 
-
   public activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction)
     : Promise<any> | Promise<void> | void {
 

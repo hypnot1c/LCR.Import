@@ -9,11 +9,11 @@ namespace LCR.TPM.Model
     public decimal UploadHistoryId { get; set; }
     public ImportRawDataModel ImportRawData { get; set; }
     public decimal ImportRawDataId { get; set; }
-    public int FileOperatorId { get; set; }
+    public decimal? FileOperatorId { get; set; }
     public char FileDirection { get; set; }
-    public DateTime FileDateOpen { get; set; }
+    public DateTime? FileDateOpen { get; set; }
     public DateTime? FileDateClose { get; set; }
-    public int LCROperatorId { get; set; }
+    public decimal? LCROperatorId { get; set; }
     public char LCRDirection { get; set; }
     public DateTime? LCRDateOpen { get; set; }
     public DateTime? LCRDateClose { get; set; }

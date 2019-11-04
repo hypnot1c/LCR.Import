@@ -3,8 +3,9 @@ export interface IApiUrls {
         upload: string
     },
     import: {
-        statusCheck: (historyId: number, userId: number) => string,
-        result: (historyId: number, userId: number) => string
+        statusCheck: (historyId: number, userId: number) => string
+        result: (historyId: number, userId: number, queryParams: any) => string
+        history: (queryParams: any) => string
     },
     switch: {
         list: string

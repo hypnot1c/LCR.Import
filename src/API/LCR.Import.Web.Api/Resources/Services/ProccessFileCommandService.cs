@@ -72,9 +72,7 @@ namespace LCR.Import.Web.Api.Resources
               {
                 var mappedData = rawData.ToMappedDataModel();
                 this.TPMContext.ImportRawData.Add(rawData);
-                //await this.TPMContext.SaveChangesAsync();
                 this.TPMContext.ImportMappedData.Add(mappedData);
-                //await this.TPMContext.SaveChangesAsync();
               }
             }
           } while (reader.NextResult());
@@ -85,8 +83,6 @@ namespace LCR.Import.Web.Api.Resources
       historyEntry.Step = TPM.Model.ImportStep.Applied;
 
       await this.TPMContext.SaveChangesAsync();
-
-      var typed = await this.TPMContext.ImportMappedData.ToListAsync();
     }
   }
 }
