@@ -11,7 +11,8 @@ namespace LCR.Import.DataValidation
     {
       RuleFor(c => c.DataRowId).Cascade(CascadeMode.StopOnFirstFailure)
         .NotNull().WithErrorCode("2")
-        .Must(c => Int32.TryParse(c, out var res)).WithErrorCode("2");
+        //.Must(c => Int32.TryParse(c, out var res)).WithErrorCode("2")
+        ;
 
       Func<ImportRawDataModel, string, PropertyValidatorContext, bool> validationFunc = (model, val, ctx) =>
       {

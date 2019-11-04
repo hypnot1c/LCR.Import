@@ -184,8 +184,7 @@ module.exports = (env, argv) => {
                 chunksSortMode: 'none' //Fix toposort cyclic dependency error
             }),
             new ProvidePlugin({
-                Promise: "bluebird",
-                $R: "Redactor"
+                Promise: "bluebird"
             }),
             new SpriteLoaderPlugin(),
             new AureliaPlugin({

@@ -5,7 +5,6 @@ using LCR.TPM.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
@@ -49,8 +48,9 @@ namespace LCR.Import.Web.Api
       services.AddCors();
 
       services.AddDbContext<TPMContext>(opts =>
-          opts.UseInMemoryDatabase($"{nameof(TPMContext)}")
-              .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+          opts.UseOracle(this.Configuration.GetConnectionString(nameof(TPMContext)))
+          //opts.UseInMemoryDatabase($"{nameof(TPMContext)}")
+          //    .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
       );
 
       services.AddScoped<IDataService, MockDataService>();

@@ -13,7 +13,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["es2017", "es2015", "es2015.promise", "dom"],
+    "lib": ["es5", "es2017", "es2015", "es2015.promise", "dom"],
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "incremental": true

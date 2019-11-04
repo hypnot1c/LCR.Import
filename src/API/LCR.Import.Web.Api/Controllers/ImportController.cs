@@ -34,11 +34,12 @@ namespace LCR.Import.Web.Api.Controllers
     }
 
     [HttpGet("{id}/user/{userId:int}/result")]
-    public async Task<IActionResult> GetResult(int id, int userId = 1)
+    public async Task<IActionResult> GetResult(decimal id, int userId = 1)
     {
       var data = await this.TPMContext.ImportRawData
-        .Where(ih => ih.UploadHistoryId == id)
-        .Where(ih => ih.UploadHistory.UserId == userId)
+        .Where(d => d.UploadHistoryId == id)
+        .Where(d => d.ImportMappedData != null)
+        //.Where(ih => ih.UploadHistory.UserId == userId)
         .Select(d => new
         {
           d.DataRowId,
@@ -47,7 +48,7 @@ namespace LCR.Import.Web.Api.Controllers
           d.PairedSwitchOperatorFullName,
           d.DirectionType,
           d.Direction,
-          d.OperatorsNetworkConnectionLevel,
+          OperatorsNetworkConnectionLvl = d.OperatorsNetworkConnectionLevel,
           d.RTNetworkConnectionLevel,
           d.DateOpen,
           d.DateClose,
@@ -56,6 +57,13 @@ namespace LCR.Import.Web.Api.Controllers
         .ToListAsync()
         ;
 
+      return Ok(new { Status = "Ok", result = data });
+    }
+
+    [HttpGet("test")]
+    public async Task<IActionResult> Test()
+    {
+      var data = await this.TPMContext.UploadHistory.ToListAsync();
       return Ok(new { Status = "Ok", result = data });
     }
   }

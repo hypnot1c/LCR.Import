@@ -20,16 +20,18 @@ export class UploadFilePage extends BasePageComponent {
     statusCheckInterval: number;
     uploadStatus: string;
     uploadResultData: any[];
+    fUpload: HTMLInputElement;
 
     async activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
         this.switchList = await this.dataService.switch.getList();
     }
 
     async uploadFile() {
+        const files = this.files || this.fUpload.files;
         this.uploadStatus = "Загрузка файла..."
         var formData = new FormData();
-        for (var i = 0; i < this.files.length; i++) {
-            var file = this.files[i];
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
             formData.append('file', file, file.name);
         }
 

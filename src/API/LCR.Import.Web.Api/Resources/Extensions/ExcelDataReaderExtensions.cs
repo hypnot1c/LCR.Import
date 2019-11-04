@@ -10,7 +10,7 @@ namespace LCR.Import.Web.Api.Resources
     {
       var result = new ImportRawDataModel();
 
-      result.DataRowId = reader.GetAsString(0);
+      result.DataRowId = Decimal.Parse(reader.GetAsString(0));
       result.ChannelBundleName = reader.GetAsString(1);
       result.SwitchOperatorName = reader.GetAsString(2);
       result.ATES = reader.GetAsString(3);
@@ -35,7 +35,7 @@ namespace LCR.Import.Web.Api.Resources
 
       result.UploadHistoryId = rawData.UploadHistoryId;
       result.ImportRawData = rawData;
-      result.ImportRawDataId = rawData.Id;
+      //result.ImportRawDataId = rawData.Id;
       result.FileDirection = rawData.Direction[0];
       result.FileDateOpen = DateTime.Parse(rawData.DateOpen);
       result.FileDateClose = String.IsNullOrEmpty(rawData.DateClose) ? null : (DateTime?)DateTime.Parse(rawData.DateClose);

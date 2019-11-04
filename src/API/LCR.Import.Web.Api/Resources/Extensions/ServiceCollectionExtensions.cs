@@ -13,7 +13,9 @@ namespace LCR.Import.Web.Api.Resources
       {
         var cacheProfile = new CacheProfile()
         {
-          NoStore = true
+          Duration = 0,
+          NoStore = true,
+          Location = ResponseCacheLocation.None
         };
         opt.CacheProfiles.Add("Default", cacheProfile);
         opt.Filters.Add<GlobalExceptionFilter>();

@@ -1,6 +1,7 @@
 using ExcelDataReader;
 using LCR.Import.DataValidation;
 using LCR.TPM.Context;
+using LCR.TPM.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -61,12 +62,19 @@ namespace LCR.Import.Web.Api.Resources
                   ;
 
                 this.Logger.LogError("Data row {0} has validation errors. Codes {1}", rawData.DataRowId, errorCodes);
+
+                var formatErrors = new ImportFormatErrorsModel();
+                formatErrors.ImportRawData = rawData;
+                formatErrors.ErrorFlags = errorCodes;
+                this.TPMContext.ImportFormatErrors.Add(formatErrors);
               }
               else
               {
                 var mappedData = rawData.ToMappedDataModel();
                 this.TPMContext.ImportRawData.Add(rawData);
+                //await this.TPMContext.SaveChangesAsync();
                 this.TPMContext.ImportMappedData.Add(mappedData);
+                //await this.TPMContext.SaveChangesAsync();
               }
             }
           } while (reader.NextResult());

@@ -9,13 +9,15 @@ namespace LCR.TPM.Model
     public UploadHistoryModel()
     {
       this.ImportRawData = new HashSet<ImportRawDataModel>();
+      this.ImportMappedData = new HashSet<ImportMappedDataModel>();
     }
-    public int UserId { get; set; }
-    public int SwitchId { get; set; }
+    public decimal UserId { get; set; }
+    public decimal SwitchId { get; set; }
     public DateTime DateUpload { get; set; }
     public string FileName { get; set; }
     public int RowsAffected { get; set; }
     public ImportStep Step { get; set; }
     public ICollection<ImportRawDataModel> ImportRawData { get; set; }
+    public ICollection<ImportMappedDataModel> ImportMappedData { get; set; }
   }
 }
