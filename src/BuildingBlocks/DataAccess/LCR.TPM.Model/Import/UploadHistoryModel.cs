@@ -13,7 +13,19 @@ namespace LCR.TPM.Model
     }
     public decimal UserId { get; set; }
     public decimal SwitchId { get; set; }
-    public DateTime DateUpload { get; set; }
+
+    private DateTime _dateUpload;
+    public DateTime DateUpload
+    {
+      get
+      {
+        return DateTime.SpecifyKind(this._dateUpload, DateTimeKind.Utc);
+      }
+      set
+      {
+        this._dateUpload = value;
+      }
+    }
     public string FileName { get; set; }
     public int RowsAffected { get; set; }
     public ImportStep Step { get; set; }

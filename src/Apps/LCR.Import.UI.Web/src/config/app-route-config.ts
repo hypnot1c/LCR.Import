@@ -3,7 +3,7 @@ import { RouteConfig } from "aurelia-router";
 
 let config: RouteConfig[] = [
     {
-        route: [""],
+        route: ["", "page=:page?"],
         name: "root",
         moduleId: PLATFORM.moduleName("pages/main"),
         nav: false,

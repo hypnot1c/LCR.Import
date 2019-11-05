@@ -74,7 +74,7 @@ namespace LCR.Import.Web.Api.Controllers
         history.UserId = userId;
         history.FileName = fileName;
         history.SwitchId = 0;
-        history.DateUpload = DateTime.Now.Date;
+        history.DateUpload = DateTime.UtcNow;
         history.Step = ImportStep.Pending;
 
         this.TPMContext.UploadHistory.Add(history);

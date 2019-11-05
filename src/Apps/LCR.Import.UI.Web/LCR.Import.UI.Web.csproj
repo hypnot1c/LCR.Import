@@ -24,6 +24,7 @@
     <None Remove="src\pages\main.ts" />
     <None Remove="src\pages\proccess-file-page.ts" />
     <None Remove="src\pages\upload-file.ts" />
+    <None Remove="src\resources\date-time-value-converter.ts" />
     <None Remove="src\services\data-service\abstractions\i-api-urls.ts" />
     <None Remove="src\services\data-service\abstractions\index.ts" />
     <None Remove="src\services\data-service\api-urls.ts" />
@@ -84,6 +85,7 @@
     <TypeScriptCompile Include="src\pages\main.ts" />
     <TypeScriptCompile Include="src\pages\proccess-file-page.ts" />
     <TypeScriptCompile Include="src\pages\upload-file-page.ts" />
+    <TypeScriptCompile Include="src\resources\value-converters\date-time-value-converter.ts" />
     <TypeScriptCompile Include="src\services\data-service\abstractions\i-api-urls.ts" />
     <TypeScriptCompile Include="src\services\data-service\abstractions\index.ts" />
     <TypeScriptCompile Include="src\services\data-service\api-urls.ts" />

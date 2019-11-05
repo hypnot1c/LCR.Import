@@ -68,7 +68,9 @@ namespace LCR.Import.Web.Api.Controllers
     [HttpGet("history")]
     public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10)
     {
-      var data = this.TPMContext.UploadHistory.AsQueryable();
+      var data = this.TPMContext.UploadHistory
+        .OrderByDescending(h => h.DateUpload)
+        .AsQueryable();
 
       var result = await PaginatedList<UploadHistoryModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
       return Ok(new { Status = "Ok", result = new { data = result, result.TotalPages, result.Count }});

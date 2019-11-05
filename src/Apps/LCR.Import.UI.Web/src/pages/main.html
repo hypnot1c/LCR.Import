@@ -1,5 +1,6 @@
 <template>
   <require from="components/pagination-component"></require>
+  <require from="resources/value-converters/date-time-value-converter"></require>
   <section class="uk-padding-small uk-background-muted">
     <div class="uk-grid">
       <div>
@@ -34,7 +35,13 @@
     </div>
   </section>
   <section class="uk-margin">
-    <pagination-component page-data.bind="paginationData"></pagination-component>
+    <pagination-component
+                          current-page.bind="paginationData.currentPageNumber"
+                          total-pages.bind="paginationData.totalPages"
+                          route-config.bind="currentRouteConfig"
+                          route-params.bind="currentRouteParams">
+
+    </pagination-component>
     <table class="uk-table uk-table-divider uk-table-striped uk-table-hover">
       <thead>
         <tr>
@@ -61,7 +68,7 @@
       <tbody>
         <tr repeat.for="entry of uploadHistory">
           <td>
-            ${entry.dateUpload}
+            ${entry.dateUpload | dateTime: 'DD.MM.YYYY HH:mm'}
           </td>
           <td>
             ${entry.fileName}
@@ -86,5 +93,9 @@
       </div>
     </template>
   </section>
-  <pagination-component page-data.bind="paginationData"></pagination-component>
+  <pagination-component current-page.bind="paginationData.currentPageNumber"
+                        total-pages.bind="paginationData.totalPages"
+                        route-config.bind="currentRouteConfig"
+                        route-params.bind="currentRouteParams">
+  </pagination-component>
 </template>
