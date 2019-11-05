@@ -21,5 +21,6 @@ namespace LCR.TPM.Context
     public DbSet<ImportRawDataModel> ImportRawData { get; set; }
     public DbSet<ImportFormatErrorsModel> ImportFormatErrors { get; set; }
     public DbSet<ImportMappedDataModel> ImportMappedData { get; set; }
+    public DbSet<SwitchModel> Switches { get; set; }
   }
 }

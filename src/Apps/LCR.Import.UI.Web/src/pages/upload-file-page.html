@@ -1,16 +1,26 @@
 <template>
   <require from="components/pagination-component"></require>
   <article>
+    <section class="uk-padding-small">
+      <ul class="uk-breadcrumb">
+        <li><a route-href="route: root">История</a></li>
+        <li><span>Загрузка файла</span></li>
+      </ul>
+    </section>
     <section show.bind="!files" class="uk-padding-small uk-background-muted">
-      <div class="uk-width-1-3">
-        <span class="uk-text-normal">Коммутатор</span>
-        <select class="uk-select" value.bind="selectedSwitch">
-          <option model.bind="null">Выберите...</option>
-          <option repeat.for="switch of switchList"
-                  model.bind="switch.id">
-            ${switch.name}
-          </option>
-        </select>
+      <div class="uk-flex uk-flex-center">
+        <div>
+          <div class="uk-form-controls">
+            <select class="uk-select uk-form-width-large" value.bind="selectedSwitch">
+              <option model.bind="null">Выберите коммутатор...</option>
+              <option repeat.for="switch of switchList"
+                      model.bind="switch.id">
+                ${switch.name}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
       </div>
       <div class="js-upload uk-placeholder uk-text-center">
         <span uk-icon="icon: upload"></span>
