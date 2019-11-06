@@ -1,5 +1,4 @@
 <template>
-  <require from="components/pagination-component"></require>
   <article>
     <section class="uk-padding-small">
       <ul class="uk-breadcrumb">
@@ -8,10 +7,13 @@
       </ul>
     </section>
     <section class="uk-padding-small uk-background-muted">
-      <div class="uk-flex uk-flex-center">
-        <div>
-          <div class="uk-form-controls">
-            <select class="uk-select uk-form-width-large" value.bind="selectedSwitch" disabled.bind="files">
+      <div class="uk-flex uk-flex-center uk-flex-middle">
+        <div class="uk-form-controls uk-text-center">
+          <div class="uk-margin-small-bottom" validation-errors.bind="selectedSwitchErrors">
+            <select class="uk-select uk-form-width-large"
+                    class.bind="selectedSwitchErrors.length ? 'uk-form-danger' : ''"
+                    value.bind="selectedSwitch & validate"
+                    disabled.bind="files && files.length && isValid">
               <option model.bind="null">Выберите коммутатор...</option>
               <option repeat.for="switch of switchList"
                       model.bind="switch.id">
@@ -19,17 +21,33 @@
               </option>
             </select>
           </div>
+          <div validation-errors.bind="filesErrors">
+            <div show.bind="!selectedFileName">
+              <div class.bind="filesErrors.length ? 'uk-form-danger' : ''">
+                <div show.bind="!isValid"
+                     class="js-upload uk-placeholder uk-text-center">
+                  <span uk-icon="icon: upload"></span>
+                  <span class="uk-text-middle">Перетащите сюда файл или</span>
+                  <div uk-form-custom>
+                    <input type="file" ref="fUpload" style="display: none;" files.bind="files & validate" change.trigger="showFileName()">
+                    <span class="uk-link" click.trigger="fUpload.click()">выберите его</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div show.bind="selectedFileName">
+              <div class="uk-flex uk-flex-center uk-flex-middle uk-margin-small-bottom">
+                <span class="uk-text-lead">${selectedFileName}</span>
+                <button class="uk-button uk-button-link uk-button-small uk-margin-small-left" uk-tooltip="Выбрать другой файл" click.trigger="clearFile()">
+                  <span uk-icon="trash"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <button class="uk-button uk-button-primary" click.trigger="uploadFile()">Загрузить</button>
         </div>
       </div>
-      <div show.bind="!files" class="js-upload uk-placeholder uk-text-center">
-        <span uk-icon="icon: upload"></span>
-        <span class="uk-text-middle">Перетащите сюда файл или</span>
-        <div uk-form-custom>
-          <input type="file" ref="fUpload" style="display: none;" files.bind="files" change.trigger="uploadFile()">
-          <span class="uk-link" click.trigger="fUpload.click()">выберите его</span>
-        </div>
-      </div>
-      <section show.bind="files" class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
+      <section show.bind="isValid" class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
         <div uk-spinner="ratio: 2"></div>
         <div class="uk-text-normal">${uploadStatus}</div>
       </section>

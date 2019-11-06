@@ -1,3 +1,4 @@
+import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
 import { Store } from "aurelia-store";
 import cloneDeep from "clone-deep";
@@ -6,6 +7,7 @@ import { IAppState } from "config/state/abstractions";
 import { BasePageComponent } from "shared/components";
 import { DataService } from "services";
 
+@autoinject
 export class ProcessFilePage extends BasePageComponent {
   constructor(
     private dataService: DataService,
@@ -46,25 +48,48 @@ export class ProcessFilePage extends BasePageComponent {
     this.statusCheckInterval = window.setInterval(() => this.statusCheck(this.state.import.currentHistoryId), 2000);
   }
 
+  deactivate() {
+    window.clearInterval(this.statusCheckInterval);
+    this.statusCheckInterval = null;
+  }
+
   private async statusCheck(historyId: number) {
     const res = await this.dataService.import.checkStatus(historyId, 1);
-    if (res.historyStatus == 1) {
-      window.clearInterval(this.statusCheckInterval);
-      this.statusCheckInterval = null;
+    switch (res.historyStatus) {
+      case 0:
+        this.importStep = 0;
+        this.importStatus = "Форматный контроль...";
+        break;
+      case 1:
+        this.importStep = 1;
+        this.importStatus = "Сопоставление данных";
+        break;
+      case 2: {
+        this.importStep = 2;
+        window.clearInterval(this.statusCheckInterval);
+        this.statusCheckInterval = null;
 
-      this.importStatus = "Файл обработан.";
+        this.importStatus = "Файл обработан.";
 
-      this.isLoadInProggress = true;
+        this.isLoadInProggress = true;
 
-      const resp = await this.dataService.import.getResult(
-        historyId,
-        1,
-        { page: this.paginationData.currentPageNumber, pageSize: 10 }
-      );
+        const resp = await this.dataService.import.getResult(
+          historyId,
+          1,
+          { page: this.paginationData.currentPageNumber, pageSize: 10 }
+        );
 
-      this.uploadResultData = resp.result.data;
-      this.paginationData.totalPages = resp.result.totalPages;
-      this.isLoadInProggress = false;
+        this.uploadResultData = resp.result.data;
+        this.paginationData.totalPages = resp.result.totalPages;
+        this.isLoadInProggress = false;
+        break;
+      }
+      default:
+        this.importStep = -1;
+        this.Logger.warn("Unknown response");
+        window.clearInterval(this.statusCheckInterval);
+        this.statusCheckInterval = null;
+        break;
     }
   }
 }

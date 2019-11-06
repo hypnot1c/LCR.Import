@@ -4,7 +4,9 @@ using LCR.TPM.Context;
 using LCR.TPM.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Oracle.ManagedDataAccess.Client;
 using System;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -80,7 +82,20 @@ namespace LCR.Import.Web.Api.Resources
       }
 
       var historyEntry = await this.TPMContext.UploadHistory.FindAsync(command.ImportHistoryId);
-      historyEntry.Step = TPM.Model.ImportStep.Applied;
+      historyEntry.Step = TPM.Model.ImportStep.DataMapping;
+
+      await this.TPMContext.SaveChangesAsync();
+
+      var dataMappingQuery = @"declare
+        l_res number;
+        begin
+          l_res:=lcr_tg_import_iapi.fill_upload_mappeddata(:uploadHistoryId);
+        end;";
+      var historySqlParam = new OracleParameter("uploadHistoryId", command.ImportHistoryId);
+
+      await this.TPMContext.Database.ExecuteSqlCommandAsync(dataMappingQuery, historySqlParam);
+
+      historyEntry.Step = ImportStep.LogicControll;
 
       await this.TPMContext.SaveChangesAsync();
     }

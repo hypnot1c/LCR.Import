@@ -1,4 +1,5 @@
 <template>
+  <require from="components/pagination-component"></require>
   <article>
     <section class="uk-padding-small">
       <ul class="uk-breadcrumb">
@@ -7,13 +8,13 @@
         <li><span>Обработка файла</span></li>
       </ul>
     </section>
-    <template if.bind="importStep == 0">
+    <template if.bind="importStep != 2">
       <section class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
         <div uk-spinner="ratio: 2"></div>
         <div class="uk-text-normal">${importStatus}</div>
       </section>
     </template>
-    <template else>
+    <template if.bind="importStep == 2">
       <section>
         <template if.bind="paginationData">
           <pagination-component current-page.bind="paginationData.currentPageNumber"

@@ -2,7 +2,8 @@ namespace LCR.TPM.Model
 {
   public enum ImportStep
   {
-    Pending = 0,
-    Applied = 1
+    FormatControl = 0,
+    DataMapping = 1,
+    LogicControll = 2
   }
 }

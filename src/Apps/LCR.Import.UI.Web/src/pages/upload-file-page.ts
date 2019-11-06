@@ -1,5 +1,6 @@
 import { autoinject } from "aurelia-framework";
 import { RouteConfig, NavigationInstruction, Router } from "aurelia-router";
+import { ValidationRules, ValidationController, validateTrigger } from 'aurelia-validation';
 import { Store } from "aurelia-store";
 import cloneDeep from "clone-deep";
 
@@ -13,9 +14,20 @@ export class UploadFilePage extends BasePageComponent {
   constructor(
     private dataService: DataService,
     private router: Router,
+    private validationController: ValidationController,
     protected store: Store<IAppState>
   ) {
     super("UploadFilePage");
+
+    this.selectedSwitch = null;
+    this.isValid = false;
+
+    ValidationRules
+      .ensure((m: UploadFilePage) => m.selectedSwitch).required()
+      .ensure((m: UploadFilePage) => m.files).satisfies((val: FileList) => val.length === 1)
+      .on(this);
+
+    this.validationController.validateTrigger = validateTrigger.manual;
   }
 
   state: IAppState;
@@ -23,11 +35,14 @@ export class UploadFilePage extends BasePageComponent {
   files: FileList;
 
   switchList: any[];
-  selectedSwitch: any;
+  selectedSwitch: number;
+  selectedFileName: string;
 
   uploadStatus: string;
 
   fUpload: HTMLInputElement;
+
+  isValid: boolean;
 
   async activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
     this.stateSubscriptions.push(
@@ -39,8 +54,29 @@ export class UploadFilePage extends BasePageComponent {
     this.switchList = await this.dataService.switch.getList();
   }
 
+  showFileName() {
+    this.files = this.files || this.fUpload.files;
+    for (var i = 0; i < this.files.length; i++) {
+      var file = this.files[i];
+      this.selectedFileName = file.name;
+    }
+  }
+
+  clearFile() {
+    this.files = null;
+    this.fUpload.files = null;
+    this.selectedFileName = null;
+  }
+
   async uploadFile() {
     this.files = this.files || this.fUpload.files;
+
+    const errors = await this.validationController.validate();
+    this.isValid = errors.valid;
+    if (!this.isValid) {
+      return;
+    }
+
     this.uploadStatus = "Загрузка файла..."
     var formData = new FormData();
     for (var i = 0; i < this.files.length; i++) {
@@ -48,6 +84,7 @@ export class UploadFilePage extends BasePageComponent {
       formData.append('file', file, file.name);
     }
 
+    formData.append("switchId", `${this.selectedSwitch}`);
     formData.append("userId", `${this.state.userId}`);
     const resp = await this.dataService.file.upload(formData, ({ loaded, total }) => {
       const percent = this.getLoadingPercentage(loaded, total);
