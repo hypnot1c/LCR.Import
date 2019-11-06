@@ -40,8 +40,7 @@
     </div>
   </section>
   <section class="uk-margin">
-    <pagination-component
-                          current-page.bind="paginationData.currentPageNumber"
+    <pagination-component current-page.bind="paginationData.currentPageNumber"
                           total-pages.bind="paginationData.totalPages"
                           route-config.bind="currentRouteConfig"
                           route-params.bind="currentRouteParams">
@@ -93,9 +92,10 @@
       </tbody>
     </table>
     <template if.bind="isLoadInProggress">
-      <div style="position: relative;">
-        <div uk-spinner class="uk-position-center"></div>
-      </div>
+      <section class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
+        <div uk-spinner></div>
+        <div class="uk-text-normal">${uploadStatus}</div>
+      </section>
     </template>
   </section>
   <pagination-component current-page.bind="paginationData.currentPageNumber"

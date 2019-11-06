@@ -1,12 +1,12 @@
 import { Environment } from "./environment";
 
-const appHost = "http://localhost:8082";
+const appHost = "http://10.31.65.27:8082";
 
 const appConfig = {
     Environment: Environment.PROD,
     AppHost: appHost,
 
-    ApiHost: "http://localhost:8083"
+    ApiHost: "http://10.31.65.27:8083"
 };
 
 export default appConfig;

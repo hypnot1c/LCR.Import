@@ -16,64 +16,68 @@ import { BasePageComponent } from "shared/components";
 
 @autoinject
 export class App extends BasePageComponent {
-    constructor(
-        protected router: Router,
-        protected fetchClient: FetchClient,
-        protected httpClient: HttpClient,
-        protected store: Store<IAppState>
-    ) {
-        super("App");
-        this.state = {} as IAppState;
+  constructor(
+    protected router: Router,
+    protected fetchClient: FetchClient,
+    protected httpClient: HttpClient,
+    protected store: Store<IAppState>
+  ) {
+    super("App");
+    this.state = {} as IAppState;
 
-        this.configureHttpClient();
-        this.configureState();
-        this.configureEvents();
-    }
+    this.configureHttpClient();
+    this.configureState();
+    this.configureEvents();
+  }
 
-    state: IAppState;
+  state: IAppState;
 
-    async activate(params, route: RouteConfig, navigationInstruction: NavigationInstruction) {
-    }
+  async activate(params, route: RouteConfig, navigationInstruction: NavigationInstruction) {
+  }
 
-    attached() {
-    }
+  attached() {
+  }
 
-    configureRouter(config: RouterConfiguration, router: Router) {
-        config.title = "LCR Import";
-        config.options.pushState = true;
-        config.map(routeConfig.routes);
+  configureRouter(config: RouterConfiguration, router: Router) {
+    config.title = "LCR Import";
+    config.options.pushState = true;
+    config.map(routeConfig.routes);
 
-        this.router = router;
-    }
+    this.router = router;
+  }
 
-    private configureHttpClient() {
-        this.fetchClient.configure(c => {
-            let defaults: any = {
-                credentials: "same-origin",
-                headers: {
-                    Accept: "application/json",
-                    "X-Requested-With": "Fetch"
-                }
-            };
-
-            c.withBaseUrl(`${appConfig.ApiHost}/`);
-            c.withDefaults(defaults);
-        });
-
-        this.httpClient.configure(c => {
-            c.withBaseUrl(`${appConfig.ApiHost}/`);
-            c.withHeader("Accept", "application/json");
-        });
-    }
-
-    private async configureState() {
-        if (appConfig.Environment < Environment.PROD) {
-            this.store.registerMiddleware(logMiddleware, MiddlewarePlacement.Before, {
-                logType: "debug"
-            });
+  private configureHttpClient() {
+    this.fetchClient.configure(c => {
+      let defaults: any = {
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          "X-Requested-With": "Fetch",
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
         }
-    }
+      };
 
-    private configureEvents(): void {
+      c.withBaseUrl(`${appConfig.ApiHost}/`);
+      c.withDefaults(defaults);
+    });
+
+    this.httpClient.configure(c => {
+      c.withBaseUrl(`${appConfig.ApiHost}/`);
+      c.withHeader("Accept", "application/json");
+      c.withHeader("Cache-Control", "no-cache");
+      c.withHeader("Pragma", "no-cache");
+    });
+  }
+
+  private async configureState() {
+    if (appConfig.Environment < Environment.PROD) {
+      this.store.registerMiddleware(logMiddleware, MiddlewarePlacement.Before, {
+        logType: "debug"
+      });
     }
+  }
+
+  private configureEvents(): void {
+  }
 }

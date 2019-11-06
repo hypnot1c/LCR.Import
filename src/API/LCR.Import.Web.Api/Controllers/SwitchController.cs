@@ -2,7 +2,6 @@ using LCR.DataService.Abstractions;
 using LCR.TPM.Context;
 using LCR.TPM.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +27,7 @@ namespace LCR.Import.Web.Api.Controllers
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SwitchModel>>> GetList()
     {
+      //var list = Enumerable.Repeat(new SwitchModel(), 5);
       var list = (await this.TPMContext.Switches
         .FromSql("select Id,Name from table(lcr_tg_import_iapi.get_switch_lst)")
         .ToListAsync())

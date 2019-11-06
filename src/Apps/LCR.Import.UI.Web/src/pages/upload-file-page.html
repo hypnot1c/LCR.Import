@@ -7,11 +7,11 @@
         <li><span>Загрузка файла</span></li>
       </ul>
     </section>
-    <section show.bind="!files" class="uk-padding-small uk-background-muted">
+    <section class="uk-padding-small uk-background-muted">
       <div class="uk-flex uk-flex-center">
         <div>
           <div class="uk-form-controls">
-            <select class="uk-select uk-form-width-large" value.bind="selectedSwitch">
+            <select class="uk-select uk-form-width-large" value.bind="selectedSwitch" disabled.bind="files">
               <option model.bind="null">Выберите коммутатор...</option>
               <option repeat.for="switch of switchList"
                       model.bind="switch.id">
@@ -21,8 +21,7 @@
           </div>
         </div>
       </div>
-      </div>
-      <div class="js-upload uk-placeholder uk-text-center">
+      <div show.bind="!files" class="js-upload uk-placeholder uk-text-center">
         <span uk-icon="icon: upload"></span>
         <span class="uk-text-middle">Перетащите сюда файл или</span>
         <div uk-form-custom>
@@ -30,73 +29,10 @@
           <span class="uk-link" click.trigger="fUpload.click()">выберите его</span>
         </div>
       </div>
-    </section>
-    <section show.bind="files && uploadStep != 1">
-      <div uk-spinner></div>
-      <span class="uk-text-normal">${uploadStatus}</span>
-    </section>
-    <template if.bind="uploadStep == 1">
-      <section>
-        <template if.bind="paginationData">
-          <pagination-component page-data.bind="paginationData"></pagination-component>
-        </template>
-        <div class="uk-overflow-auto">
-          <table class="uk-table uk-table-divider uk-table-striped uk-table-hover">
-            <thead>
-              <tr>
-                <th colspan="10" class="uk-text-center">
-                  Данные из файла
-                </th>
-                <th colspan="4" class="uk-text-center">
-                  Данные из LCR
-                </th>
-              </tr>
-              <tr>
-                <th>№ строки</th>
-                <th>Транковая группа</th>
-                <th>Оператор-владелец коммутатора</th>
-                <th>Полное наименование оператора</th>
-                <th>Тип направления</th>
-                <th>Исх./Вх.</th>
-                <th>Уровень присоединения оператора</th>
-                <th>Уроверь присоединения Ростелеком</th>
-                <th>Дата начала действия</th>
-                <th>Дата закрытия</th>
-                <th>Carrier</th>
-                <th>Direction</th>
-                <th>ValidFrom</th>
-                <th>ValidUntil</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr repeat.for="entry of uploadResultData">
-                <td>${entry.dataRowId}</td>
-                <td>${entry.channelBundleName}</td>
-                <td>${entry.switchOperatorName}</td>
-                <td>${entry.pairedSwitchOperatorFullName}</td>
-                <td>${entry.directionType}</td>
-                <td>${entry.direction}</td>
-                <td>${entry.operatorsNetworkConnectionLvl}</td>
-                <td>${entry.rTNetworkConnectionLevel}</td>
-                <td>${entry.dateOpen}</td>
-                <td>${entry.dateClose}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-          <template if.bind="isLoadInProggress">
-            <div style="position: relative;">
-              <div uk-spinner class="uk-position-center"></div>
-            </div>
-          </template>
-        </div>
-        <template if.bind="paginationData">
-          <pagination-component page-data.bind="paginationData"></pagination-component>
-        </template>
+      <section show.bind="files" class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
+        <div uk-spinner="ratio: 2"></div>
+        <div class="uk-text-normal">${uploadStatus}</div>
       </section>
-    </template>
+    </section>
   </article>
 </template>

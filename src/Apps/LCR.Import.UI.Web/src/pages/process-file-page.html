@@ -1,0 +1,90 @@
+<template>
+  <article>
+    <section class="uk-padding-small">
+      <ul class="uk-breadcrumb">
+        <li><a route-href="route: root">История</a></li>
+        <li><a route-href="route: upload-file">Загрузка файла</a></li>
+        <li><span>Обработка файла</span></li>
+      </ul>
+    </section>
+    <template if.bind="importStep == 0">
+      <section class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
+        <div uk-spinner="ratio: 2"></div>
+        <div class="uk-text-normal">${importStatus}</div>
+      </section>
+    </template>
+    <template else>
+      <section>
+        <template if.bind="paginationData">
+          <pagination-component current-page.bind="paginationData.currentPageNumber"
+                                total-pages.bind="paginationData.totalPages"
+                                route-config.bind="currentRouteConfig"
+                                route-params.bind="currentRouteParams">
+
+          </pagination-component>
+        </template>
+        <div class="uk-overflow-auto">
+          <table class="uk-table uk-table-divider uk-table-striped uk-table-hover">
+            <thead>
+              <tr>
+                <th colspan="10" class="uk-text-center">
+                  Данные из файла
+                </th>
+                <th colspan="4" class="uk-text-center">
+                  Данные из LCR
+                </th>
+              </tr>
+              <tr>
+                <th>№ строки</th>
+                <th>Транковая группа</th>
+                <th>Оператор-владелец коммутатора</th>
+                <th>Полное наименование оператора</th>
+                <th>Тип направления</th>
+                <th>Исх./Вх.</th>
+                <th>Уровень присоединения оператора</th>
+                <th>Уроверь присоединения Ростелеком</th>
+                <th>Дата начала действия</th>
+                <th>Дата закрытия</th>
+                <th>Carrier</th>
+                <th>Direction</th>
+                <th>ValidFrom</th>
+                <th>ValidUntil</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr repeat.for="entry of uploadResultData">
+                <td>${entry.dataRowId}</td>
+                <td>${entry.channelBundleName}</td>
+                <td>${entry.switchOperatorName}</td>
+                <td>${entry.pairedSwitchOperatorFullName}</td>
+                <td>${entry.directionType}</td>
+                <td>${entry.direction}</td>
+                <td>${entry.operatorsNetworkConnectionLvl}</td>
+                <td>${entry.rTNetworkConnectionLevel}</td>
+                <td>${entry.dateOpen}</td>
+                <td>${entry.dateClose}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <template if.bind="isLoadInProggress">
+            <div style="position: relative;">
+              <div uk-spinner class="uk-position-center"></div>
+            </div>
+          </template>
+        </div>
+        <template if.bind="paginationData">
+          <pagination-component current-page.bind="paginationData.currentPageNumber"
+                                total-pages.bind="paginationData.totalPages"
+                                route-config.bind="currentRouteConfig"
+                                route-params.bind="currentRouteParams">
+
+          </pagination-component>
+        </template>
+      </section>
+    </template>
+  </article>
+</template>
