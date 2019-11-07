@@ -11,7 +11,7 @@
         <li class="uk-active"><a route-href="route.bind: routeName; params.bind: page.params">${page.number}</a></li>
       </template>
       <template else>
-        <li class="uk-active"><span><span>${page.number}</span></span></li>
+        <li class="uk-active"><span><span>${page.number || page}</span></span></li>
       </template>
     </template>
     <template if.bind="currentPage == totalPages">

@@ -13,8 +13,9 @@
     "clone-deep": "4.0.1",
     "moment": "2.24.0",
     "normalize-scss": "7.0.1",
+    "pikaday": "1.8.0",
     "rxjs": "6.5.3",
-    "uikit": "^3.2.2",
+    "uikit": "3.2.2",
     "whatwg-fetch": "3.0.0"
   },
   "devDependencies": {

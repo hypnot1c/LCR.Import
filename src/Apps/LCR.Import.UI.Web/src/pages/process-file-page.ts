@@ -29,6 +29,8 @@ export class ProcessFilePage extends BasePageComponent {
   importStep: number;
   importStatus: string;
 
+  editModes: any;
+
   determineActivationStrategy() {
     return activationStrategy.invokeLifecycle;
   }
@@ -39,6 +41,12 @@ export class ProcessFilePage extends BasePageComponent {
         this.state = cloneDeep(newState);
       })
     );
+
+    if (!this.state.import.currentHistoryId) {
+      this.router.navigateToRoute("upload-file");
+    }
+
+    this.editModes = {};
 
     this.paginationData = { currentPageNumber: 1, totalPages: undefined };
     this.currentRouteConfig = routeConfig;
@@ -65,6 +73,11 @@ export class ProcessFilePage extends BasePageComponent {
       this.paginationData.totalPages = resp.result.totalPages;
       this.isLoadInProggress = false;
     }
+  }
+
+  flagFunc(method, update, value, flag) {
+    value = (value & flag) != 0 ? 'diff' : '';
+    update(value);
   }
 
   deactivate() {

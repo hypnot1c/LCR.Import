@@ -1,6 +1,9 @@
 <template>
   <require from="components/pagination-component"></require>
   <require from="resources/value-converters/date-time-value-converter"></require>
+  <require from="resources/binding-behaviors/intercept-binding-behavior"></require>
+  <require from="resources/custom-attributes/date-picker-custom-attribute"></require>
+  <require from="./process-file-page.scss"></require>
   <article>
     <section class="uk-padding-small">
       <ul class="uk-breadcrumb">
@@ -37,6 +40,7 @@
                 </th>
               </tr>
               <tr>
+                <th></th>
                 <th>№ строки</th>
                 <th>Транковая группа</th>
                 <th>Оператор-владелец коммутатора</th>
@@ -55,20 +59,41 @@
             </thead>
             <tbody>
               <tr repeat.for="entry of uploadResultData">
+                <td style="min-width: 50px;">
+                  <button class="uk-button uk-button-link uk-button-small" uk-tooltip="Утвердить" style="color: green;">
+                    <span uk-icon="icon: check"></span>
+                  </button>
+                  <button class="uk-button uk-button-link uk-button-small" uk-tooltip="Исключить" style="color: red;">
+                    <span uk-icon="icon: ban"></span>
+                  </button>
+                </td>
                 <td>${entry.dataRowId}</td>
                 <td>${entry.channelBundleName}</td>
                 <td>${entry.switchOperatorName}</td>
                 <td>${entry.pairedSwitchOperatorFullName}</td>
                 <td>${entry.directionType}</td>
-                <td>${entry.fileDirection}</td>
+                <td>${entry.fileDirection == '1' ? 'I' : 'O'}</td>
                 <td>${entry.operatorsNetworkConnectionLvl}</td>
                 <td>${entry.rtNetworkConnectionLevel}</td>
-                <td>${entry.fileDateOpen | dateTime: 'DD.MM.YYYY'}</td>
-                <td>${entry.fileDateClose | dateTime: 'DD.MM.YYYY'}</td>
+                <td class.bind="entry.flags & intercept:flagFunc:4">
+                  ${entry.fileDateOpen | shortDate}
+                </td>
+                <td class.bind="entry.flags & intercept:flagFunc:8">
+                  ${entry.fileDateClose | shortDate}
+                </td>
                 <td>${entry.lcrSwitchOperatorId}</td>
-                <td>${entry.lcrDirection}</td>
-                <td>${entry.lcrDateOpen | dateTime: 'DD.MM.YYYY'}</td>
-                <td>${entry.lcrDateClose | dateTime: 'DD.MM.YYYY'}</td>
+                <td>${entry.lcrDirection == '1' ? 'I' : 'O'}</td>
+                <td class.bind="entry.flags & intercept:flagFunc:4">
+                  ${entry.lcrDateOpen | shortDate}
+                </td>
+                <td class.bind="entry.flags & intercept:flagFunc:8" style="width:200px;" click.delegate="editModes[entry.dataRowId]=true">
+                  <!--<template if.bind="editModes[entry.dataRowId]">
+                    <input datepicker="format.bind: 'L'" type="text" value.bind="entry.lcrDateClose" class="uk-input uk-form-small" change.delegate="editModes[entry.dataRowId]=false" />
+                  </template>-->
+                  <!--<template else>-->
+                  ${entry.lcrDateClose | shortDate}
+                  <!--</template>-->
+                </td>
               </tr>
             </tbody>
           </table>

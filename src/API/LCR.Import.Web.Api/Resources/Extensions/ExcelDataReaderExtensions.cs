@@ -36,7 +36,7 @@ namespace LCR.Import.Web.Api.Resources
       result.UploadHistoryId = rawData.UploadHistoryId;
       result.ImportRawData = rawData;
       //result.ImportRawDataId = rawData.Id;
-      result.FileDirection = rawData.Direction[0];
+      result.FileDirection = rawData.Direction[0] == 'I' ? '1' : '2';
       result.FileDateOpen = DateTime.Parse(rawData.DateOpen);
       result.FileDateClose = String.IsNullOrEmpty(rawData.DateClose) ? null : (DateTime?)DateTime.Parse(rawData.DateClose);
 

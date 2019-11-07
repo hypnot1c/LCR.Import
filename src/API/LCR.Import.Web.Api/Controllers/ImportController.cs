@@ -51,6 +51,23 @@ namespace LCR.Import.Web.Api.Controllers
 
       var result = await PaginatedList<ImportResultViewModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
 
+      result.ForEach(e =>
+      {
+        if(e.FileDateOpen != e.LCRDateOpen)
+        {
+          e.Flags |= 4;
+        }
+        if (e.FileDateClose != e.LCRDateClose)
+        {
+          e.Flags |= 8;
+        }
+
+        if (e.FileDirection != e.LCRDirection)
+        {
+          e.Flags |= 16;
+        }
+      });
+
       return Ok(new { Status = "Ok", result = new { data = result, result.TotalPages, result.Count } });
     }
 

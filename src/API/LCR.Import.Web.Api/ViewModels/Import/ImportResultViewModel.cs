@@ -18,5 +18,6 @@ namespace LCR.Import.Web.Api.ViewModels
     public char? LCRDirection { get; set; }
     public DateTime? LCRDateOpen { get; set; }
     public DateTime? LCRDateClose { get; set; }
+    public long Flags { get; set; }
   }
 }
