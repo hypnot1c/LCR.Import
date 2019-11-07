@@ -1,10 +1,10 @@
+using AutoMapper;
 using LCR.Import.Web.Api.Resources;
 using LCR.Import.Web.Api.ViewModels;
 using LCR.TPM.Context;
 using LCR.TPM.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,14 +15,16 @@ namespace LCR.Import.Web.Api.Controllers
   {
     public ImportController(
       TPMContext tpmCtx,
-      IConfiguration config,
+      IMapper mapper,
       ILogger<ImportController> logger
       ) : base(logger)
     {
       this.TPMContext = tpmCtx;
+      this.Mapper = mapper;
     }
 
     public TPMContext TPMContext { get; }
+    public IMapper Mapper { get; }
 
     [HttpGet("{id}/user/{userId:int}/status")]
     public async Task<IActionResult> GetFileStatus(int id, int userId = 1)
@@ -39,24 +41,11 @@ namespace LCR.Import.Web.Api.Controllers
     [HttpGet("{id}/user/{userId:int}/result")]
     public async Task<IActionResult> GetResult(decimal id, int userId = 1, int page = 1, int pageSize = 10)
     {
-      var data = this.TPMContext.ImportRawData
-        .Where(d => d.UploadHistoryId == id)
-        .Where(d => d.ImportMappedData != null)
-        //.Where(ih => ih.UploadHistory.UserId == userId)
-        .Select(d => new ImportResultViewModel
-        {
-          DataRowId = d.DataRowId,
-          ChannelBundleName = d.ChannelBundleName,
-          SwitchOperatorName = d.SwitchOperatorName,
-          PairedSwitchOperatorFullName = d.PairedSwitchOperatorFullName,
-          DirectionType = d.DirectionType,
-          Direction = d.Direction,
-          OperatorsNetworkConnectionLvl = d.OperatorsNetworkConnectionLevel,
-          RTNetworkConnectionLevel = d.RTNetworkConnectionLevel,
-          DateOpen = d.DateOpen,
-          DateClose = d.DateClose,
-          Fdate = d.ImportMappedData.FileDateOpen
-        })
+      var data = this.Mapper.ProjectTo<ImportResultViewModel>(
+        this.TPMContext.ImportRawData
+          .Where(d => d.UploadHistoryId == id)
+        )
+        .OrderBy(rd => rd.DataRowId)
         .AsQueryable()
         ;
 

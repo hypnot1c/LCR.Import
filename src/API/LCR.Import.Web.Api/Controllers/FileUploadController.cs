@@ -73,7 +73,7 @@ namespace LCR.Import.Web.Api.Controllers
         var history = new UploadHistoryModel();
         history.UserId = userId;
         history.FileName = fileName;
-        history.SwitchId = 0;
+        history.SwitchId = vm.SwitchId;
         history.DateUpload = DateTime.UtcNow;
         history.Step = ImportStep.FormatControl;
 
@@ -95,6 +95,7 @@ namespace LCR.Import.Web.Api.Controllers
   public class UploadRequest
   {
     public int UserId { get; set; }
+    public int SwitchId { get; set; }
     public IFormFile File { get; set; }
   }
 }

@@ -1,5 +1,6 @@
 <template>
   <require from="components/pagination-component"></require>
+  <require from="resources/value-converters/date-time-value-converter"></require>
   <article>
     <section class="uk-padding-small">
       <ul class="uk-breadcrumb">
@@ -59,15 +60,15 @@
                 <td>${entry.switchOperatorName}</td>
                 <td>${entry.pairedSwitchOperatorFullName}</td>
                 <td>${entry.directionType}</td>
-                <td>${entry.direction}</td>
+                <td>${entry.fileDirection}</td>
                 <td>${entry.operatorsNetworkConnectionLvl}</td>
-                <td>${entry.rTNetworkConnectionLevel}</td>
-                <td>${entry.dateOpen}</td>
-                <td>${entry.dateClose}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>${entry.rtNetworkConnectionLevel}</td>
+                <td>${entry.fileDateOpen | dateTime: 'DD.MM.YYYY'}</td>
+                <td>${entry.fileDateClose | dateTime: 'DD.MM.YYYY'}</td>
+                <td>${entry.lcrSwitchOperatorId}</td>
+                <td>${entry.lcrDirection}</td>
+                <td>${entry.lcrDateOpen | dateTime: 'DD.MM.YYYY'}</td>
+                <td>${entry.lcrDateClose | dateTime: 'DD.MM.YYYY'}</td>
               </tr>
             </tbody>
           </table>

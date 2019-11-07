@@ -1,5 +1,5 @@
 import { autoinject } from "aurelia-framework";
-import { Router, RouteConfig, NavigationInstruction } from "aurelia-router";
+import { Router, RouteConfig, NavigationInstruction, activationStrategy } from "aurelia-router";
 import { Store } from "aurelia-store";
 import cloneDeep from "clone-deep";
 
@@ -29,6 +29,10 @@ export class ProcessFilePage extends BasePageComponent {
   importStep: number;
   importStatus: string;
 
+  determineActivationStrategy() {
+    return activationStrategy.invokeLifecycle;
+  }
+
   async activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction) {
     this.stateSubscriptions.push(
       this.store.state.subscribe((newState) => {
@@ -36,16 +40,31 @@ export class ProcessFilePage extends BasePageComponent {
       })
     );
 
-    this.importStep = 0;
-    this.importStatus = "Форматный контроль...";
     this.paginationData = { currentPageNumber: 1, totalPages: undefined };
     this.currentRouteConfig = routeConfig;
     this.currentRouteParams = params || {};
 
     params.page = params.page || 1;
     this.paginationData.currentPageNumber = parseInt(params.page);
+    if (this.importStep != 2) {
+      this.importStep = 0;
+      this.importStatus = "Форматный контроль...";
 
-    this.statusCheckInterval = window.setInterval(() => this.statusCheck(this.state.import.currentHistoryId), 2000);
+      this.statusCheckInterval = window.setInterval(() => this.statusCheck(this.state.import.currentHistoryId), 2000);
+    }
+    else {
+      this.isLoadInProggress = true;
+
+      const resp = await this.dataService.import.getResult(
+        this.state.import.currentHistoryId,
+        params.page,
+        { page: this.paginationData.currentPageNumber, pageSize: 10 }
+      );
+
+      this.uploadResultData = resp.result.data;
+      this.paginationData.totalPages = resp.result.totalPages;
+      this.isLoadInProggress = false;
+    }
   }
 
   deactivate() {
