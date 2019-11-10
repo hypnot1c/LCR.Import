@@ -17,5 +17,8 @@ namespace LCR.TPM.Model
     public char LCRDirection { get; set; }
     public DateTime? LCRDateOpen { get; set; }
     public DateTime? LCRDateClose { get; set; }
+    public long Flags { get; set; }
+    public bool? Approved { get; set; }
+    public bool Excluded { get; set; }
   }
 }

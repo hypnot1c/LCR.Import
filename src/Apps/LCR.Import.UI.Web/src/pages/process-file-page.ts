@@ -28,8 +28,8 @@ export class ProcessFilePage extends BasePageComponent {
   statusCheckInterval: number;
   importStep: number;
   importStatus: string;
-
-  editModes: any;
+  summary: any;
+  allRowsAreApproved: boolean;
 
   determineActivationStrategy() {
     return activationStrategy.invokeLifecycle;
@@ -46,8 +46,7 @@ export class ProcessFilePage extends BasePageComponent {
       this.router.navigateToRoute("upload-file");
     }
 
-    this.editModes = {};
-
+    this.uploadResultData = [];
     this.paginationData = { currentPageNumber: 1, totalPages: undefined };
     this.currentRouteConfig = routeConfig;
     this.currentRouteParams = params || {};
@@ -75,14 +74,62 @@ export class ProcessFilePage extends BasePageComponent {
     }
   }
 
-  flagFunc(method, update, value, flag) {
-    value = (value & flag) != 0 ? 'diff' : '';
-    update(value);
-  }
-
   deactivate() {
     window.clearInterval(this.statusCheckInterval);
     this.statusCheckInterval = null;
+  }
+
+  flagFunc(method, update, value, flag) {
+    value = flag && ((value & flag) != 0) ? 'diff' : '';
+    update(value);
+  }
+
+  async approveRow(row: any) {
+    const resp = await this.dataService.import.setRowApproved(this.state.import.currentHistoryId, row.id, true);
+    if (resp.status == "Ok") {
+      row.approved = true;
+
+      const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
+      if (resp2.status == "Ok") {
+        this.allRowsAreApproved = resp2.result;
+      }
+    }
+  }
+
+  async disapproveRow(row: any) {
+    const resp = await this.dataService.import.setRowApproved(this.state.import.currentHistoryId, row.id, false);
+    if (resp.status == "Ok") {
+      row.approved = false;
+
+      const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
+      if (resp2.status == "Ok") {
+        this.allRowsAreApproved = resp2.result;
+      }
+    }
+  }
+
+  async excludeRow(row: any) {
+    const resp = await this.dataService.import.setRowExcluded(this.state.import.currentHistoryId, row.id, true);
+    if (resp.status == "Ok") {
+      row.excluded = true;
+
+      const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
+      if (resp2.status == "Ok") {
+        this.allRowsAreApproved = resp2.result;
+      }
+    }
+  }
+
+  async includeRow(row: any) {
+    const resp = await this.dataService.import.setRowExcluded(this.state.import.currentHistoryId, row.id, false);
+    if (resp.status == "Ok") {
+      row.excluded = false;
+
+      const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
+      if (resp2.status == "Ok") {
+        this.allRowsAreApproved = resp2.result;
+      }
+    }
   }
 
   private async statusCheck(historyId: number) {
@@ -97,11 +144,15 @@ export class ProcessFilePage extends BasePageComponent {
         this.importStatus = "Сопоставление данных";
         break;
       case 2: {
-        this.importStep = 2;
         window.clearInterval(this.statusCheckInterval);
         this.statusCheckInterval = null;
 
         this.importStatus = "Файл обработан.";
+
+        const summaryResp = await this.dataService.import.getImportSummary(this.state.import.currentHistoryId);
+        this.summary = summaryResp.result;
+
+        this.importStep = 2;
 
         this.isLoadInProggress = true;
 

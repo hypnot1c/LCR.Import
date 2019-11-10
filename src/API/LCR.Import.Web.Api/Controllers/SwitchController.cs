@@ -14,24 +14,18 @@ namespace LCR.Import.Web.Api.Controllers
   {
     public SwitchController(
       IDataService dataService,
-      TPMContext tpmCtx,
       ILogger<SwitchController> logger
       ) : base(logger)
     {
       this.DataService = dataService;
-      this.TPMContext = tpmCtx;
     }
 
     public IDataService DataService { get; }
-    public TPMContext TPMContext { get; }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SwitchModel>>> GetList()
     {
-      //var list = Enumerable.Repeat(new SwitchModel(), 5);
-      var list = (await this.TPMContext.Switches
-        .FromSql("select Id,Name from table(lcr_tg_import_iapi.get_switch_lst)")
-        .ToListAsync())
+      var list = (await this.DataService.Switch_GetListAsync())
         .OrderBy(s => s.Name)
         ;
 

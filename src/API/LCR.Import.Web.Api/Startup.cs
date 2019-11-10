@@ -1,6 +1,6 @@
 using AutoMapper;
 using LCR.DataService.Abstractions;
-using LCR.DataService.Mock;
+using LCR.DataService;
 using LCR.Import.Web.Api.Resources;
 using LCR.TPM.Context;
 using Microsoft.AspNetCore.Builder;
@@ -54,7 +54,7 @@ namespace LCR.Import.Web.Api
 
       services.AddAutoMapper(typeof(MappingProfile));
 
-      services.AddScoped<IDataService, MockDataService>();
+      services.AddScoped<IDataService, DataService.DataService>();
 
       services.AddScoped<IProccessFileCommandService<ProccessFileCommand>, ProccessFileCommandService>();
       services.AddHostedService<ProccessFileCommandHostedService>();

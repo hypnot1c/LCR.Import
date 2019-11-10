@@ -1,6 +1,7 @@
 using AutoMapper;
 using LCR.Import.Web.Api.ViewModels;
 using LCR.TPM.Model;
+using System.Linq;
 
 namespace LCR.Import.Web.Api.Resources
 {
@@ -8,14 +9,11 @@ namespace LCR.Import.Web.Api.Resources
   {
     public MappingProfile()
     {
-      CreateMap<ImportRawDataModel, ImportResultViewModel>()
-        .ForMember(d => d.OperatorsNetworkConnectionLvl, opt => opt.MapFrom(s => s.OperatorsNetworkConnectionLevel))
-        .ForMember(d => d.FileDirection, opt => opt.MapFrom(s => s.ImportMappedData != null ? (char?)s.ImportMappedData.FileDirection : null))
-        .ForMember(d => d.FileDateOpen, opt => opt.MapFrom(s => s.ImportMappedData != null ? s.ImportMappedData.FileDateOpen : null))
-        .ForMember(d => d.FileDateClose, opt => opt.MapFrom(s => s.ImportMappedData != null ? s.ImportMappedData.FileDateClose : null))
-        .ForMember(d => d.LCRDirection, opt => opt.MapFrom(s => s.ImportMappedData != null ? (char?)s.ImportMappedData.LCRDirection : null))
-        .ForMember(d => d.LCRDateOpen, opt => opt.MapFrom(s => s.ImportMappedData != null ? s.ImportMappedData.LCRDateOpen : null))
-        .ForMember(d => d.LCRDateClose, opt => opt.MapFrom(s => s.ImportMappedData != null ? s.ImportMappedData.LCRDateClose : null))
+      CreateMap<UploadHistoryModel, ImportSummaryViewModel>()
+        .ForMember(d => d.SwitchName, opt => opt.Ignore())
+        .ForMember(d => d.RowsCount, opt => opt.MapFrom(s => s.ImportRawData.Count))
+        .ForMember(d => d.DiffRowsCount, opt => opt.MapFrom(s => s.ImportMappedData.Count(md => (md.Flags & 2) == 0)))
+        .ForMember(d => d.ErrorRowsCount, opt => opt.MapFrom(s => s.ImportRawData.Count(rd => rd.ImportFormatErrors != null)))
         ;
     }
   }

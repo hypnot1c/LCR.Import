@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.DataService.Abstractions\LCR.DataService.Abstractions.csproj" />
-    <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.DataService.Mock\LCR.DataService.Mock.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.DataService\LCR.DataService.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.TPM.Context\LCR.TPM.Context.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\DataAccess\LCR.TPM.Model\LCR.TPM.Model.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\Helpers\Helpers.AspNet\Helpers.AspNet.csproj" />

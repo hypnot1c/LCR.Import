@@ -3,6 +3,7 @@
   <require from="resources/value-converters/date-time-value-converter"></require>
   <require from="resources/binding-behaviors/intercept-binding-behavior"></require>
   <require from="resources/custom-attributes/date-picker-custom-attribute"></require>
+  <require from="./partials/rows/approved-row.html"></require>
   <require from="./process-file-page.scss"></require>
   <article>
     <section class="uk-padding-small">
@@ -19,7 +20,51 @@
       </section>
     </template>
     <template if.bind="importStep == 2">
-      <section>
+      <section class="uk-padding-small uk-background-muted">
+        <div class="uk-grid uk-grid-small">
+          <div class="uk-width-1-6">
+            <span class="uk-text-normal">Коммутатор: </span>
+            <span class="uk-text-meta">${summary.switchName}</span>
+          </div>
+          <div>
+            <span class="uk-text-normal">Файл: </span>
+            <span class="uk-text-meta">${summary.fileName}</span>
+          </div>
+        </div>
+        <div class="uk-grid uk-grid-small">
+          <div class="uk-width-1-6">
+            <span class="uk-text-normal">Кол-во строк: </span>
+            <span class="uk-text-meta">${summary.rowsCount}</span>
+          </div>
+          <div>
+            <span class="uk-text-normal">С изменениями: </span>
+            <span class="uk-text-meta" style="color: orange;">${summary.diffRowsCount}</span>
+          </div>
+          <div>
+            <span class="uk-text-normal">С ошибками: </span>
+            <span class="uk-text-meta" style="color: red;">${summary.errorRowsCount}</span>
+          </div>
+        </div>
+        <div class="uk-grid uk-grid-small">
+          <div class="uk-width-1-6">
+            <select class="uk-select" value="null">
+              <option value="null">Показать всё</option>
+              <option value="1">С изменениями</option>
+              <option value="2">С форматными ошибками</option>
+              <option value="3">Исключенные</option>
+            </select>
+          </div>
+        </div>
+        <div class="uk-grid uk-grid-small">
+          <div class="uk-width-1-6">
+            <button class="uk-button uk-button-primary uk-button-small"
+                    disabled.bind="!allRowsAreApproved">
+              Загрузить в LCR
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="uk-margin-small">
         <template if.bind="paginationData">
           <pagination-component current-page.bind="paginationData.currentPageNumber"
                                 total-pages.bind="paginationData.totalPages"
@@ -29,70 +74,146 @@
           </pagination-component>
         </template>
         <div class="uk-overflow-auto">
-          <table class="uk-table uk-table-divider uk-table-striped uk-table-hover">
+          <table class="uk-table uk-table-divider uk-table-striped uk-table-hover uk-table-small">
             <thead>
               <tr>
                 <th colspan="10" class="uk-text-center">
                   Данные из файла
                 </th>
-                <th colspan="4" class="uk-text-center">
+                <th colspan="" class="uk-text-center">
                   Данные из LCR
                 </th>
+                <th></th>
               </tr>
               <tr>
-                <th></th>
-                <th>№ строки</th>
+                <th>№</th>
                 <th>Транковая группа</th>
                 <th>Оператор-владелец коммутатора</th>
                 <th>Полное наименование оператора</th>
                 <th>Тип направления</th>
                 <th>Исх./Вх.</th>
-                <th>Уровень присоединения оператора</th>
-                <th>Уроверь присоединения Ростелеком</th>
+                <th>Урв. присоед. опер.</th>
+                <th>Урв. просоед. РТ</th>
                 <th>Дата начала действия</th>
                 <th>Дата закрытия</th>
                 <th>Carrier</th>
-                <th>Direction</th>
+                <th>Dir.</th>
                 <th>ValidFrom</th>
                 <th>ValidUntil</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              <tr repeat.for="entry of uploadResultData">
-                <td style="min-width: 50px;">
-                  <button class="uk-button uk-button-link uk-button-small" uk-tooltip="Утвердить" style="color: green;">
-                    <span uk-icon="icon: check"></span>
-                  </button>
-                  <button class="uk-button uk-button-link uk-button-small" uk-tooltip="Исключить" style="color: red;">
-                    <span uk-icon="icon: ban"></span>
-                  </button>
-                </td>
+              <tr repeat.for="entry of uploadResultData" class="${entry.approved ? 'row-approved' : ''} ${entry.excluded ? 'row-excluded' : ''}">
                 <td>${entry.dataRowId}</td>
                 <td>${entry.channelBundleName}</td>
-                <td>${entry.switchOperatorName}</td>
-                <td>${entry.pairedSwitchOperatorFullName}</td>
+
+                <td if.bind="!entry.approved && !entry.excluded" class.bind="entry.logicFlags & intercept:flagFunc:32">
+                  ${entry.switchOperatorName}
+                </td>
+                <td else>
+                  ${entry.switchOperatorName}
+                </td>
+
+                <td if.bind="!entry.approved && !entry.excluded" class.bind="entry.logicFlags & intercept:flagFunc:32">
+                  ${entry.pairedSwitchOperatorFullName}
+                </td>
+                <td else>
+                  ${entry.pairedSwitchOperatorFullName}
+                </td>
+
                 <td>${entry.directionType}</td>
                 <td>${entry.fileDirection == '1' ? 'I' : 'O'}</td>
                 <td>${entry.operatorsNetworkConnectionLvl}</td>
                 <td>${entry.rtNetworkConnectionLevel}</td>
-                <td class.bind="entry.flags & intercept:flagFunc:4">
+
+                <td if.bind="!entry.approved && !entry.excluded" class.bind="entry.logicFlags & intercept:flagFunc:4">
                   ${entry.fileDateOpen | shortDate}
                 </td>
-                <td class.bind="entry.flags & intercept:flagFunc:8">
+                <td else>
+                  ${entry.fileDateOpen | shortDate}
+                </td>
+
+                <td if.bind="!entry.approved && !entry.excluded" class.bind="entry.logicFlags & intercept:flagFunc:8">
                   ${entry.fileDateClose | shortDate}
                 </td>
-                <td>${entry.lcrSwitchOperatorId}</td>
+                <td else>
+                  ${entry.fileDateClose | shortDate}
+                </td>
+
+                <td if.bind="!entry.approved && !entry.excluded" class.bind="entry.logicFlags & intercept:flagFunc:32">
+                  ${entry.lcrOperatorName}
+                </td>
+                <td else>
+                  ${entry.lcrOperatorName}
+                </td>
+
                 <td>${entry.lcrDirection == '1' ? 'I' : 'O'}</td>
-                <td class.bind="entry.flags & intercept:flagFunc:4">
+
+                <td if.bind="!entry.approved && !entry.excluded" class.bind="entry.logicFlags & intercept:flagFunc:4">
                   ${entry.lcrDateOpen | shortDate}
                 </td>
-                <td class.bind="entry.flags & intercept:flagFunc:8" style="width:200px;" click.delegate="editModes[entry.dataRowId]=true">
-                  <!--<template if.bind="editModes[entry.dataRowId]">
-                    <input datepicker="format.bind: 'L'" type="text" value.bind="entry.lcrDateClose" class="uk-input uk-form-small" change.delegate="editModes[entry.dataRowId]=false" />
-                  </template>-->
-                  <!--<template else>-->
+                <td else>
+                  ${entry.lcrDateOpen | shortDate}
+                </td>
+
+                <td if.bind="!entry.approved && !entry.excluded" class.bind="entry.logicFlags & intercept:flagFunc:8">
                   ${entry.lcrDateClose | shortDate}
-                  <!--</template>-->
+                </td>
+                <td else>
+                  ${entry.lcrDateClose | shortDate}
+                </td>
+
+                <td if.bind="!entry.approved && !entry.excluded" style="min-width: 50px;">
+                  <button class="uk-button uk-button-link uk-button-small">
+                    <span uk-icon="icon: more-vertical"></span>
+                  </button>
+                  <div uk-dropdown>
+                    <button class="uk-button uk-button-link uk-button-small"
+                            uk-tooltip="Утвердить"
+                            style="color: green;"
+                            click.delegate="approveRow(entry)">
+                      <span uk-icon="icon: check"></span>Утвердить
+                    </button>
+                    <button class="uk-button uk-button-link uk-button-small"
+                            uk-tooltip="Исключить"
+                            style="color: red;"
+                            click.delegate="excludeRow(entry)">
+                      <span uk-icon="icon: ban"></span>Исключить
+                    </button>
+                  </div>
+                </td>
+                <td if.bind="entry.approved">
+                  <button class="uk-button uk-button-link uk-button-small">
+                    <span uk-icon="icon: more-vertical"></span>
+                  </button>
+                  <div uk-dropdown>
+                    <button class="uk-button uk-button-link uk-button-small"
+                            uk-tooltip="Отозвать"
+                            style="color: green;"
+                            click.delegate="disapproveRow(entry)">
+                      <span uk-icon="icon: check"></span>Отозвать
+                    </button>
+                    <button class="uk-button uk-button-link uk-button-small"
+                            uk-tooltip="Исключить"
+                            style="color: red;"
+                            click.delegate="excludeRow(entry)">
+                      <span uk-icon="icon: ban"></span>Исключить
+                    </button>
+                  </div>
+                </td>
+                <td if.bind="entry.excluded" style="opacity: 1;">
+                  <button class="uk-button uk-button-link uk-button-small">
+                    <span uk-icon="icon: more-vertical"></span>
+                  </button>
+                  <div uk-dropdown>
+                    <button class="uk-button uk-button-link uk-button-small"
+                            uk-tooltip="Включить"
+                            style="color: red;"
+                            click.delegate="includeRow(entry)">
+                      <span uk-icon="icon: ban"></span>Включить
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>

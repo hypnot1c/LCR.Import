@@ -5,7 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.50" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LCR.DataService.Abstractions\LCR.DataService.Abstractions.csproj" />
+    <ProjectReference Include="..\LCR.TPM.Context\LCR.TPM.Context.csproj" />
   </ItemGroup>
 
 </Project>

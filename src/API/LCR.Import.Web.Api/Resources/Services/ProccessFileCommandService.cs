@@ -1,4 +1,5 @@
 using ExcelDataReader;
+using LCR.DataService.Abstractions;
 using LCR.Import.DataValidation;
 using LCR.TPM.Context;
 using LCR.TPM.Model;
@@ -16,14 +17,17 @@ namespace LCR.Import.Web.Api.Resources
   public class ProccessFileCommandService : IProccessFileCommandService<ProccessFileCommand>
   {
     public ProccessFileCommandService(
+      IDataService dataService,
       TPMContext tpmCtx,
       ILogger<ProccessFileCommandService> logger
       )
     {
+      this.DataService = dataService;
       this.TPMContext = tpmCtx;
       this.Logger = logger;
     }
 
+    public IDataService DataService { get; }
     public TPMContext TPMContext { get; }
     public ILogger<ProccessFileCommandService> Logger { get; }
 
@@ -53,6 +57,11 @@ namespace LCR.Import.Web.Api.Resources
 
               var rawData = reader.ToImportRawDataModel();
               rawData.UploadHistoryId = command.ImportHistoryId;
+
+              if(rawData.IsEmpty)
+              {
+                continue;
+              }
 
               var result = validator.Validate(rawData);
 
@@ -86,14 +95,9 @@ namespace LCR.Import.Web.Api.Resources
 
       await this.TPMContext.SaveChangesAsync();
 
-      var dataMappingQuery = @"declare
-        l_res number;
-        begin
-          l_res:=lcr_tg_import_iapi.fill_upload_mappeddata(:uploadHistoryId);
-        end;";
-      var historySqlParam = new OracleParameter("uploadHistoryId", command.ImportHistoryId);
+      await this.DataService.RawData_MapDataAsync(command.ImportHistoryId);
 
-      await this.TPMContext.Database.ExecuteSqlCommandAsync(dataMappingQuery, historySqlParam);
+      await this.DataService.MappedData_SetFlagsAsync(command.ImportHistoryId);
 
       historyEntry.Step = ImportStep.LogicControll;
 

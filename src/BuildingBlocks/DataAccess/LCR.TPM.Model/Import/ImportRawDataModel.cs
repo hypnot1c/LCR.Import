@@ -1,4 +1,5 @@
 using LCR.TPM.Model.Abstractions;
+using System;
 
 namespace LCR.TPM.Model
 {
@@ -24,5 +25,27 @@ namespace LCR.TPM.Model
     public string ShortName { get; set; }
     public ImportMappedDataModel ImportMappedData { get; set; }
     public ImportFormatErrorsModel ImportFormatErrors { get; set; }
+
+    public bool IsEmpty
+    {
+      get
+      {
+        return String.IsNullOrEmpty(this.ChannelBundleName)
+          && String.IsNullOrEmpty(this.SwitchOperatorName)
+          && String.IsNullOrEmpty(this.ATES)
+          && String.IsNullOrEmpty(this.ChannelBundleOperatorName)
+          && String.IsNullOrEmpty(this.Direction)
+          && String.IsNullOrEmpty(this.DirectionType)
+          && String.IsNullOrEmpty(this.AlarmType)
+          && String.IsNullOrEmpty(this.DateOpen)
+          && String.IsNullOrEmpty(this.DateClose)
+          && String.IsNullOrEmpty(this.PairedSwitchOperatorFullName)
+          && String.IsNullOrEmpty(this.PairedSwitchOperatorCoverage)
+          && String.IsNullOrEmpty(this.OperatorsNetworkConnectionLevel)
+          && String.IsNullOrEmpty(this.RTNetworkConnectionLevel)
+          && String.IsNullOrEmpty(this.BranchOffice)
+          && String.IsNullOrEmpty(this.ShortName);
+      }
+    }
   }
 }

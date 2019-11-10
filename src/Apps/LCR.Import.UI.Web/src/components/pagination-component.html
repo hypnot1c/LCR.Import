@@ -1,10 +1,12 @@
 <template>
-  <ul class="uk-pagination uk-flex-center" uk-margin>
+  <ul class="uk-pagination uk-flex-center uk-margin-remove">
     <template if.bind="currentPage == 1">
       <li class="uk-disable"><span><span uk-pagination-previous></span></span></li>
     </template>
     <template else>
-      <li class="uk-active"><a route-href="route.bind: routeName; params.bind: prevPageParams"><span uk-pagination-previous></span></a></li>
+      <li class="uk-active">
+        <a href.bind="prevPageUrl"><span uk-pagination-previous></span></a>
+      </li>
     </template>
     <template repeat.for="page of pageMap">
       <template if.bind="page != '...' && page.number != currentPage">

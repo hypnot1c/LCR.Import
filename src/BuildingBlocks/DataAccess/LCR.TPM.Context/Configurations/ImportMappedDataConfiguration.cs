@@ -22,7 +22,11 @@ namespace LCR.TPM.Context.Configurations
       builder.Property(p => p.LCRDirection).HasColumnName("LCR_DIRECTION");
       builder.Property(p => p.LCRDateOpen).HasColumnName("LCR_VALIDFROM");
       builder.Property(p => p.LCRDateClose).HasColumnName("LCR_VALIDUNTIL");
+      builder.Property(p => p.Flags).HasColumnName("FLAGS");
+      builder.Property(p => p.Approved).HasColumnName("APPROVED");
+      builder.Property(p => p.Excluded).HasColumnName("EXCLUDED");
 
+      
       builder.HasOne(p => p.UploadHistory).WithMany(p => p.ImportMappedData).HasForeignKey(p => p.UploadHistoryId);
       builder.HasOne(p => p.ImportRawData)
         .WithOne(p => p.ImportMappedData)

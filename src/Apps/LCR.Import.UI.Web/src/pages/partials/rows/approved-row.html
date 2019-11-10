@@ -1,0 +1,20 @@
+<template bindable="model">
+  <require from="resources/value-converters/date-time-value-converter"></require>
+  <tr>
+    <td>${model.dataRowId}</td>
+    <td>${model.channelBundleName}</td>
+    <td>${model.switchOperatorName}</td>
+    <td>${model.pairedSwitchOperatorFullName}</td>
+    <td>${model.directionType}</td>
+    <td>${model.fileDirection == '1' ? 'I' : 'O'}</td>
+    <td>${model.operatorsNetworkConnectionLvl}</td>
+    <td>${model.rtNetworkConnectionLevel}</td>
+    <td>${model.fileDateOpen | shortDate}</td>
+    <td>${model.fileDateClose | shortDate}</td>
+    <td>${model.lcrOperatorName}</td>
+    <td>${model.lcrDirection == '1' ? 'I' : 'O'}</td>
+    <td>${model.lcrDateOpen | shortDate}</td>
+    <td>${model.lcrDateClose | shortDate}</td>
+    <td></td>
+  </tr>
+</template>

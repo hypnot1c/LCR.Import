@@ -13,7 +13,6 @@ namespace LCR.TPM.Model
     }
     public decimal UserId { get; set; }
     public decimal SwitchId { get; set; }
-
     private DateTime _dateUpload;
     public DateTime DateUpload
     {
