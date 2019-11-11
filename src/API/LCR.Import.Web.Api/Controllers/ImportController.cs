@@ -47,6 +47,7 @@ namespace LCR.Import.Web.Api.Controllers
     {
       var data = this.TPMContext.ImportResults
         .Where(d => d.UploadHistoryId == id)
+        .Where(d => d.FormatFlags == null)
         .OrderBy(rd => rd.DataRowId)
         .AsQueryable()
         ;

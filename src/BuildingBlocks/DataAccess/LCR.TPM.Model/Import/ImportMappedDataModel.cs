@@ -14,7 +14,7 @@ namespace LCR.TPM.Model
     public DateTime? FileDateOpen { get; set; }
     public DateTime? FileDateClose { get; set; }
     public decimal? LCROperatorId { get; set; }
-    public char LCRDirection { get; set; }
+    public char? LCRDirection { get; set; }
     public DateTime? LCRDateOpen { get; set; }
     public DateTime? LCRDateClose { get; set; }
     public long Flags { get; set; }
