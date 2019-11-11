@@ -2,10 +2,12 @@ import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction, activationStrategy } from "aurelia-router";
 import { Store } from "aurelia-store";
 import cloneDeep from "clone-deep";
+import UIkit from "uikit";
 
 import { IAppState } from "config/state/abstractions";
 import { BasePageComponent } from "shared/components";
 import { DataService } from "services";
+import * as importStateActions from "config/state/actions/import-state-actions";
 
 @autoinject
 export class ProcessFilePage extends BasePageComponent {
@@ -39,6 +41,7 @@ export class ProcessFilePage extends BasePageComponent {
     this.stateSubscriptions.push(
       this.store.state.subscribe((newState) => {
         this.state = cloneDeep(newState);
+        //this.state.import.currentHistoryId = 88;
       })
     );
 
@@ -47,7 +50,7 @@ export class ProcessFilePage extends BasePageComponent {
     }
 
     this.uploadResultData = [];
-    this.paginationData = { currentPageNumber: 1, totalPages: undefined };
+    this.paginationData = this.paginationData || { currentPageNumber: 1, totalPages: undefined };
     this.currentRouteConfig = routeConfig;
     this.currentRouteParams = params || {};
 
@@ -88,6 +91,7 @@ export class ProcessFilePage extends BasePageComponent {
     const resp = await this.dataService.import.setRowApproved(this.state.import.currentHistoryId, row.id, true);
     if (resp.status == "Ok") {
       row.approved = true;
+      row.excluded = false;
 
       const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
       if (resp2.status == "Ok") {
@@ -112,6 +116,7 @@ export class ProcessFilePage extends BasePageComponent {
     const resp = await this.dataService.import.setRowExcluded(this.state.import.currentHistoryId, row.id, true);
     if (resp.status == "Ok") {
       row.excluded = true;
+      row.approved = false;
 
       const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
       if (resp2.status == "Ok") {
@@ -124,6 +129,7 @@ export class ProcessFilePage extends BasePageComponent {
     const resp = await this.dataService.import.setRowExcluded(this.state.import.currentHistoryId, row.id, false);
     if (resp.status == "Ok") {
       row.excluded = false;
+      row.approved = false;
 
       const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
       if (resp2.status == "Ok") {
@@ -173,6 +179,54 @@ export class ProcessFilePage extends BasePageComponent {
         window.clearInterval(this.statusCheckInterval);
         this.statusCheckInterval = null;
         break;
+    }
+  }
+
+  async edit(entry: any) {
+
+    const dialogPromise = new Promise((res, rej) => {
+      const el = document.getElementById('edit-dialog');
+      const btnSave: HTMLButtonElement = el.querySelector("button.uk-button-primary");
+
+      let resolved = false;
+
+      const saveHandler = () => {
+        resolved = true;
+        UIkit.modal(el).hide();
+        res();
+      };
+
+      const cancelhandler = () => {
+        if (!resolved) {
+          rej();
+        }
+      };
+
+      btnSave.addEventListener("click", saveHandler, { once: true });
+      el.addEventListener("hidden", cancelhandler, { once: true });
+      UIkit.modal(el).show();
+    });
+
+    dialogPromise
+      .then(() => { this.Logger.info("SAVED!") })
+      .catch(() => { this.Logger.info("CANCELED!") })
+      ;
+  }
+
+  async lcrSave() {
+    if (this.allRowsAreApproved) {
+      this.importStatus = "Сохранение в LCR";
+      this.importStep = 3;
+      const resp = await this.dataService.import.lcrSave(this.state.import.currentHistoryId);
+      if (resp.status == "Ok") {
+        this.importStep = 4;
+        this.importStatus = "Сохранено в LCR";
+
+        window.setTimeout(async () => {
+          await this.store.dispatch(importStateActions.setCurrentHistoryId, undefined);
+          this.router.navigateToRoute("root");
+        }, 500);
+      }
     }
   }
 }

@@ -7,6 +7,7 @@ using LCR.TPM.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -63,11 +64,12 @@ namespace LCR.Import.Web.Api.Controllers
     public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10)
     {
       var data = this.TPMContext.UploadHistory
+        .Where(h => h.Step == ImportStep.Saved)
         .OrderByDescending(h => h.DateUpload)
         .AsQueryable();
 
       var result = await PaginatedList<UploadHistoryModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
-      return Ok(new { Status = "Ok", result = new { data = result, result.TotalPages, result.Count }});
+      return Ok(new { Status = "Ok", result = new { data = result, result.TotalPages, result.Count } });
     }
 
     [HttpGet("{id:int}/summary")]
@@ -90,6 +92,7 @@ namespace LCR.Import.Web.Api.Controllers
     public async Task<IActionResult> IsAllApproved(decimal id)
     {
       var isAllApproved = !(await this.TPMContext.ImportMappedData
+        .Where(md => md.UploadHistoryId == id)
         .AnyAsync(r => (r.Approved == null || !r.Approved.Value) && !r.Excluded)
         )
         ;
@@ -101,11 +104,13 @@ namespace LCR.Import.Web.Api.Controllers
     public async Task<IActionResult> SetApproved(decimal id, decimal rowId, [FromBody] SetApprovedRowRequest vm)
     {
       var mappedData = await this.TPMContext.ImportMappedData
+        .Where(md => md.UploadHistoryId == id)
         .Where(md => md.ImportRawDataId == rowId)
         .SingleOrDefaultAsync()
         ;
 
       mappedData.Approved = vm.Approved;
+      mappedData.Excluded = false;
 
       await this.TPMContext.SaveChangesAsync();
 
@@ -116,15 +121,45 @@ namespace LCR.Import.Web.Api.Controllers
     public async Task<IActionResult> SetExcluded(decimal id, decimal rowId, [FromBody] SetExcludedRowRequest vm)
     {
       var mappedData = await this.TPMContext.ImportMappedData
+        .Where(md => md.UploadHistoryId == id)
         .Where(md => md.ImportRawDataId == rowId)
         .SingleOrDefaultAsync()
         ;
 
       mappedData.Excluded = vm.Excluded;
+      mappedData.Approved = false;
 
       await this.TPMContext.SaveChangesAsync();
 
       return Ok(new { Status = "Ok" });
+    }
+
+    [HttpPost("{id}/lcr-save")]
+    public async Task<IActionResult> LCRSave(decimal id)
+    {
+      var isAllApproved = !(await this.TPMContext.ImportMappedData
+        .Where(md => md.UploadHistoryId == id)
+        .AnyAsync(r => (r.Approved == null || !r.Approved.Value) && !r.Excluded)
+        )
+        ;
+
+      if(!isAllApproved)
+      {
+        this.Logger.LogError("Not all rows are approved for saving");
+        return StatusCode(400, new { Status = "Error" });
+      }
+
+      try
+      {
+        await this.DataService.Import_SaveAsync(id);
+        return Ok(new { Status = "Ok" });
+      }
+      catch (Exception ex)
+      {
+        this.Logger.LogError(ex, "Error saving data to lcr");
+        return StatusCode(500, new { Status = "Error" });
+      }
+
     }
   }
 }

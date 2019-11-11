@@ -22,6 +22,10 @@ export class PaginantionComponent extends BaseComponent {
   nextPageUrl: any;
   pageMap: any[];
 
+  currentPageChanged() {
+    this.bind();
+  }
+
   totalPagesChanged() {
     this.bind();
   }
@@ -53,7 +57,9 @@ export class PaginantionComponent extends BaseComponent {
         let rightBound = this.currentPage + 3;
 
         if (leftBound > 0) {
-          this.pageMap.push({ number: 1 });
+          if (leftBound != 1) {
+            this.pageMap.push({ number: 1 });
+          }
           if ((leftBound - 1) > 1) {
             this.pageMap.push('...');
           }
@@ -71,7 +77,9 @@ export class PaginantionComponent extends BaseComponent {
           if ((this.totalPages - rightBound) > 1) {
             this.pageMap.push('...');
           }
-          this.pageMap.push({ number: this.totalPages });
+          if (rightBound != this.totalPages) {
+            this.pageMap.push({ number: this.totalPages });
+          }
         }
         else {
           for (let i = this.currentPage; i <= this.totalPages; i++) {

@@ -69,6 +69,13 @@ export class DataService extends BaseObject {
       const resp = await this.fetchClient.fetch(apiUrls.import.isAllApproved(historyId));
       return resp.json();
     },
+    lcrSave: async (historyId: number) => {
+      const resp = await this.fetchClient.fetch(apiUrls.import.lcrSave(historyId),
+        {
+          method: "POST"
+        });
+      return resp.json();
+    }
   };
 
   switch = {

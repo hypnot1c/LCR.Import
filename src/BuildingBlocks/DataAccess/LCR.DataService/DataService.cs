@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using LCR.DataService.Abstractions;
 using LCR.TPM.Context;
 using LCR.TPM.Model;
 using Microsoft.EntityFrameworkCore;
 using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LCR.DataService
 {
@@ -81,6 +81,30 @@ namespace LCR.DataService
 
           await this.TPMContext.Database.ExecuteSqlCommandAsync(query, historySqlParam, flagParam);
         }
+      }
+    }
+
+    public async Task Import_SaveAsync(decimal uploadHistoryId)
+    {
+      var saveQuery = @"declare
+        l_res number;
+        begin
+          l_res:=lcr_tg_import_iapi.import_tg(:uploadHistoryId);
+        end;";
+
+      using (var historySqlParam = new OracleParameter("uploadHistoryId", uploadHistoryId))
+      {
+        var historyEntry = await this.TPMContext.UploadHistory.FindAsync(uploadHistoryId);
+        if(historyEntry == null)
+        {
+          throw new ArgumentNullException(nameof(historyEntry), "Upload history was not found");
+        }
+
+        await this.TPMContext.Database.ExecuteSqlCommandAsync(saveQuery, historySqlParam);
+
+        historyEntry.Step = ImportStep.Saved;
+
+        await this.TPMContext.SaveChangesAsync();
       }
     }
   }

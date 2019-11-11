@@ -5,22 +5,32 @@
     </template>
     <template else>
       <li class="uk-active">
-        <a href.bind="prevPageUrl"><span uk-pagination-previous></span></a>
+        <a href.bind="prevPageUrl" class="uk-link-toggle">
+          <span uk-pagination-previous class="uk-link-heading"></span>
+        </a>
       </li>
     </template>
     <template repeat.for="page of pageMap">
       <template if.bind="page != '...' && page.number != currentPage">
-        <li class="uk-active"><a route-href="route.bind: routeName; params.bind: page.params">${page.number}</a></li>
+        <li class="uk-active">
+          <a route-href="route.bind: routeName; params.bind: page.params" class="uk-link-heading">${page.number}</a>
+        </li>
       </template>
       <template else>
-        <li class="uk-active"><span><span>${page.number || page}</span></span></li>
+        <li class="uk-active">
+          <span><span>${page.number || page}</span></span>
+        </li>
       </template>
     </template>
     <template if.bind="currentPage == totalPages">
       <li class="uk-disable"><span><span uk-pagination-next></span></span></li>
     </template>
     <template else>
-      <li class="uk-active"><a href.bind="nextPageUrl"><span uk-pagination-next></span></a></li>
+      <li class="uk-active">
+        <a href.bind="nextPageUrl" class="uk-link-toggle">
+          <span uk-pagination-next class="uk-link-heading"></span>
+        </a>
+      </li>
     </template>
   </ul>
 </template>

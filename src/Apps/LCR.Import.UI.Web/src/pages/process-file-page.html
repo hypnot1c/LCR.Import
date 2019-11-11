@@ -58,14 +58,15 @@
         <div class="uk-grid uk-grid-small">
           <div class="uk-width-1-6">
             <button class="uk-button uk-button-primary uk-button-small"
-                    disabled.bind="!allRowsAreApproved">
+                    disabled.bind="!allRowsAreApproved"
+                    click.trigger="lcrSave()">
               Загрузить в LCR
             </button>
           </div>
         </div>
       </section>
       <section class="uk-margin-small">
-        <template if.bind="paginationData">
+        <template if.bind="paginationData.totalPages">
           <pagination-component current-page.bind="paginationData.currentPageNumber"
                                 total-pages.bind="paginationData.totalPages"
                                 route-config.bind="currentRouteConfig"
@@ -80,7 +81,7 @@
                 <th colspan="10" class="uk-text-center">
                   Данные из файла
                 </th>
-                <th colspan="" class="uk-text-center">
+                <th colspan="4" class="uk-text-center">
                   Данные из LCR
                 </th>
                 <th></th>
@@ -104,7 +105,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr repeat.for="entry of uploadResultData" class="${entry.approved ? 'row-approved' : ''} ${entry.excluded ? 'row-excluded' : ''}">
+              <tr repeat.for="entry of uploadResultData"
+                  dblclick.delegate="edit(entry)"
+                  class="${entry.approved ? 'row-approved' : ''} ${entry.excluded ? 'row-excluded' : ''}">
                 <td>${entry.dataRowId}</td>
                 <td>${entry.channelBundleName}</td>
 
@@ -174,7 +177,7 @@
                             style="color: green;"
                             click.delegate="approveRow(entry)">
                       <span uk-icon="icon: check"></span>Утвердить
-                    </button>
+                    </button><br />
                     <button class="uk-button uk-button-link uk-button-small"
                             uk-tooltip="Исключить"
                             style="color: red;"
@@ -183,7 +186,7 @@
                     </button>
                   </div>
                 </td>
-                <td if.bind="entry.approved">
+                <td if.bind="entry.approved" style="min-width: 50px;">
                   <button class="uk-button uk-button-link uk-button-small">
                     <span uk-icon="icon: more-vertical"></span>
                   </button>
@@ -193,7 +196,7 @@
                             style="color: green;"
                             click.delegate="disapproveRow(entry)">
                       <span uk-icon="icon: check"></span>Отозвать
-                    </button>
+                    </button><br />
                     <button class="uk-button uk-button-link uk-button-small"
                             uk-tooltip="Исключить"
                             style="color: red;"
@@ -202,7 +205,7 @@
                     </button>
                   </div>
                 </td>
-                <td if.bind="entry.excluded" style="opacity: 1;">
+                <td if.bind="entry.excluded" style="min-width: 50px; opacity: 1;">
                   <button class="uk-button uk-button-link uk-button-small">
                     <span uk-icon="icon: more-vertical"></span>
                   </button>
@@ -219,12 +222,12 @@
             </tbody>
           </table>
           <template if.bind="isLoadInProggress">
-            <div style="position: relative;">
-              <div uk-spinner class="uk-position-center"></div>
+            <div class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
+              <div uk-spinner></div>
             </div>
           </template>
         </div>
-        <template if.bind="paginationData">
+        <template if.bind="paginationData.totalPages">
           <pagination-component current-page.bind="paginationData.currentPageNumber"
                                 total-pages.bind="paginationData.totalPages"
                                 route-config.bind="currentRouteConfig"
@@ -235,4 +238,11 @@
       </section>
     </template>
   </article>
+  <div id="edit-dialog" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+      <h2 class="uk-modal-title"></h2>
+      <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+      <button class="uk-button uk-button-primary" type="button">Save</button>
+    </div>
+  </div>
 </template>

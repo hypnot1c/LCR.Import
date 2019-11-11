@@ -40,12 +40,14 @@
     </div>
   </section>
   <section class="uk-margin">
-    <pagination-component current-page.bind="paginationData.currentPageNumber"
-                          total-pages.bind="paginationData.totalPages"
-                          route-config.bind="currentRouteConfig"
-                          route-params.bind="currentRouteParams">
+    <template if.bind="paginationData.totalPages">
+      <pagination-component current-page.bind="paginationData.currentPageNumber"
+                            total-pages.bind="paginationData.totalPages"
+                            route-config.bind="currentRouteConfig"
+                            route-params.bind="currentRouteParams">
 
-    </pagination-component>
+      </pagination-component>
+    </template>
     <table class="uk-table uk-table-divider uk-table-striped uk-table-hover">
       <thead>
         <tr>
@@ -69,7 +71,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody if.bind="uploadHistory.length > 0">
         <tr repeat.for="entry of uploadHistory">
           <td>
             ${entry.dateUpload | dateTime: 'DD.MM.YYYY HH:mm'}
@@ -90,6 +92,11 @@
           </td>
         </tr>
       </tbody>
+      <tbody else>
+        <tr>
+          <td colspan="6" class="uk-text-center">Нет данных</td>
+        </tr>
+      </tbody>
     </table>
     <template if.bind="isLoadInProggress">
       <section class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
@@ -98,9 +105,11 @@
       </section>
     </template>
   </section>
-  <pagination-component current-page.bind="paginationData.currentPageNumber"
-                        total-pages.bind="paginationData.totalPages"
-                        route-config.bind="currentRouteConfig"
-                        route-params.bind="currentRouteParams">
-  </pagination-component>
+  <template if.bind="paginationData.totalPages">
+    <pagination-component current-page.bind="paginationData.currentPageNumber"
+                          total-pages.bind="paginationData.totalPages"
+                          route-config.bind="currentRouteConfig"
+                          route-params.bind="currentRouteParams">
+    </pagination-component>
+  </template>
 </template>

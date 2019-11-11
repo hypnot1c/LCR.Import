@@ -31,7 +31,8 @@ const apiUrls: IApiUrls = {
     summary: (historyId: number) => `import/${historyId}/summary`,
     approveRow: (historyId: number, rowId: number) => `import/${historyId}/row/${rowId}/approved`,
     excludeRow: (historyId: number, rowId: number) => `import/${historyId}/row/${rowId}/excluded`,
-    isAllApproved: (historyId: number) => `import/${historyId}/is-all-approved`
+    isAllApproved: (historyId: number) => `import/${historyId}/is-all-approved`,
+    lcrSave: (historyId: number) => `import/${historyId}/lcr-save`,
   },
   switch: {
     list: "switch"

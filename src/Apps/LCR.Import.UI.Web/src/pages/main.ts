@@ -34,6 +34,7 @@ export class MainPage extends BasePageComponent {
 
     params.page = params.page || 1;
     this.paginationData.currentPageNumber = parseInt(params.page);
+
     this.dataService.import.getHistory({ page: params.page, pageSize: 10 })
       .then(resp => {
         if (resp.status != "Ok") {
