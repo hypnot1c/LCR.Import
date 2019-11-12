@@ -48,7 +48,7 @@ namespace LCR.Import.Web.Api.Controllers
     {
       var data = this.TPMContext.ImportResults
         .Where(d => d.UploadHistoryId == id)
-        .Where(d => d.FormatFlags == null)
+        //.Where(d => d.FormatFlags == null)
         .OrderBy(rd => rd.DataRowId)
         .AsQueryable()
         ;
@@ -63,12 +63,21 @@ namespace LCR.Import.Web.Api.Controllers
     [HttpGet("history")]
     public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10)
     {
-      var data = this.TPMContext.UploadHistory
+      var data = this.Mapper.ProjectTo<ImportHistoryViewModel>(this.TPMContext.UploadHistory
         .Where(h => h.Step == ImportStep.Saved)
         .OrderByDescending(h => h.DateUpload)
-        .AsQueryable();
+        )
+        .AsQueryable()
+        ;
 
-      var result = await PaginatedList<UploadHistoryModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
+      var switches = await this.DataService.Switch_GetListAsync();
+
+      var result = await PaginatedList<ImportHistoryViewModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
+      result.ForEach(i =>
+      {
+        i.SwitchName = switches.SingleOrDefault(s => s.Id == i.SwitchId)?.Name;
+      });
+
       return Ok(new { Status = "Ok", result = new { data = result, result.TotalPages, result.Count } });
     }
 
@@ -112,9 +121,25 @@ namespace LCR.Import.Web.Api.Controllers
       mappedData.Approved = vm.Approved;
       mappedData.Excluded = false;
 
+      if (mappedData.LCRTGId == null)
+      {
+        mappedData.LCRDateOpen = mappedData.FileDateOpen;
+        mappedData.LCRDateClose = mappedData.LCRDateClose ?? mappedData.FileDateClose;
+        mappedData.LCRDirection = mappedData.FileDirection;
+        mappedData.LCROperatorId = mappedData.LCROperatorId ?? mappedData.FileOperatorId;
+      }
+
       await this.TPMContext.SaveChangesAsync();
 
-      return Ok(new { Status = "Ok" });
+      var data = await this.TPMContext.ImportResults
+       .AsNoTracking()
+       .Where(d => d.UploadHistoryId == id)
+       .Where(d => d.FormatFlags == null)
+       .Where(d => d.Id == rowId)
+       .SingleAsync()
+       ;
+
+      return Ok(new { Status = "Ok", result = data });
     }
 
     [HttpPost("{id}/row/{rowId}/excluded")]
@@ -159,7 +184,34 @@ namespace LCR.Import.Web.Api.Controllers
         this.Logger.LogError(ex, "Error saving data to lcr");
         return StatusCode(500, new { Status = "Error" });
       }
+    }
 
+    [HttpPost("{id}/row/{rowId}/save")]
+    public async Task<IActionResult> SaveRow(decimal id, decimal rowId, [FromBody] SaveRowRequest vm)
+    {
+      var mappedData = await this.TPMContext.ImportMappedData
+        .Where(md => md.UploadHistoryId == id)
+        .Where(md => md.ImportRawDataId == rowId)
+        .SingleOrDefaultAsync()
+        ;
+
+      mappedData.LCROperatorId = vm.LCROperatorId;
+      mappedData.LCRDateClose = vm.LCRDateClose;
+      mappedData.Flags = 0;
+
+      await this.TPMContext.SaveChangesAsync();
+
+      await this.DataService.MappedData_SetRowFlagsAsync(id, rowId);
+
+      var data = await this.TPMContext.ImportResults
+        .AsNoTracking()
+        .Where(d => d.UploadHistoryId == id)
+        .Where(d => d.FormatFlags == null)
+        .Where(d => d.Id == rowId)
+        .SingleAsync()
+        ;
+
+      return Ok(new { Status = "Ok", result = data });
     }
   }
 }

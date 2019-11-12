@@ -18,6 +18,7 @@ namespace LCR.TPM.Context.Configurations
       builder.Property(p => p.FileDirection).HasColumnName("FILE_DIRECTION");
       builder.Property(p => p.FileDateOpen).HasColumnName("FILE_VALIDFROM");
       builder.Property(p => p.FileDateClose).HasColumnName("FILE_VALIDUNTIL");
+      builder.Property(p => p.LCRTGId).HasColumnName("LCR_TGID");
       builder.Property(p => p.LCROperatorId).HasColumnName("LCR_TGOPERATORID");
       builder.Property(p => p.LCRDirection).HasColumnName("LCR_DIRECTION");
       builder.Property(p => p.LCRDateOpen).HasColumnName("LCR_VALIDFROM");

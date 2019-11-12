@@ -16,10 +16,13 @@ namespace LCR.TPM.Context.Configurations
       builder.Property(p => p.UploadHistoryId).HasColumnName("UPLOADHISTORYID");
       builder.Property(p => p.ChannelBundleName).HasColumnName("TRUNKGROUPNAME");
       builder.Property(p => p.DirectionType).HasColumnName("TRUNKGROUPTYPE");
+      builder.Property(p => p.Direction).HasColumnName("DIRECTION");
       builder.Property(p => p.OperatorsNetworkConnectionLvl).HasColumnName("OPERATORSNETWORKCONNECTLVL");
       builder.Property(p => p.PairedSwitchOperatorFullName).HasColumnName("PAIREDSWITCHOPERATORFULLNAME");
       builder.Property(p => p.RTNetworkConnectionLevel).HasColumnName("RTNETWORKCONNECTIONLEVEL");
       builder.Property(p => p.SwitchOperatorName).HasColumnName("SWITCHOPERATORNAME");
+      builder.Property(p => p.ValidFrom).HasColumnName("VALIDFROM");
+      builder.Property(p => p.ValidUntil).HasColumnName("VALIDUNTIL");
       builder.Property(p => p.FormatFlags).HasColumnName("FORMATFLAGS");
       builder.Property(p => p.LogicFlags).HasColumnName("LOGICFLAGS");
       builder.Property(p => p.FileOperatorId).HasColumnName("FILE_TGOPERATORID");

@@ -12,6 +12,7 @@ namespace LCR.TPM.Model
     public string ChannelBundleName { get; set; }
     public string SwitchOperatorName { get; set; }
     public string PairedSwitchOperatorFullName { get; set; }
+    public string Direction { get; set; }
     public string DirectionType { get; set; }
     public string OperatorsNetworkConnectionLvl { get; set; }
     public string RTNetworkConnectionLevel { get; set; }
@@ -30,5 +31,7 @@ namespace LCR.TPM.Model
     public string LCROperatorName { get; set; }
     public bool? Approved { get; set; }
     public bool? Excluded { get; set; }
+    public string ValidFrom { get; set; }
+    public string ValidUntil { get; set; }
   }
 }

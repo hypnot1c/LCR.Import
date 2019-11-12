@@ -33,7 +33,13 @@ const apiUrls: IApiUrls = {
     excludeRow: (historyId: number, rowId: number) => `import/${historyId}/row/${rowId}/excluded`,
     isAllApproved: (historyId: number) => `import/${historyId}/is-all-approved`,
     lcrSave: (historyId: number) => `import/${historyId}/lcr-save`,
+    saveRow: (historyId: number, rowId: number) => `import/${historyId}/row/${rowId}/save`,
   },
+
+  operator: {
+    list: "operators"
+  },
+
   switch: {
     list: "switch"
   }

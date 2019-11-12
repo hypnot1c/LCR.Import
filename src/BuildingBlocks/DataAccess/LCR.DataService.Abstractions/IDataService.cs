@@ -9,6 +9,8 @@ namespace LCR.DataService.Abstractions
     Task<IEnumerable<SwitchModel>> Switch_GetListAsync();
     Task RawData_MapDataAsync(decimal uploadHistoryId);
     Task MappedData_SetFlagsAsync(decimal uploadHistoryId);
+    Task MappedData_SetRowFlagsAsync(decimal uploadHistoryId, decimal rawDataId);
     Task Import_SaveAsync(decimal uploadHistoryId);
+    Task<IEnumerable<OperatorModel>> Operator_GetListAsync();
   }
 }

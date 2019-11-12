@@ -3,6 +3,7 @@ import { Router, RouteConfig, NavigationInstruction, activationStrategy } from "
 import { Store } from "aurelia-store";
 import cloneDeep from "clone-deep";
 import UIkit from "uikit";
+import Pikaday from "pikaday";
 
 import { IAppState } from "config/state/abstractions";
 import { BasePageComponent } from "shared/components";
@@ -32,6 +33,8 @@ export class ProcessFilePage extends BasePageComponent {
   importStatus: string;
   summary: any;
   allRowsAreApproved: boolean;
+  operatorList: any[];
+  selectedOperatorId: number;
 
   determineActivationStrategy() {
     return activationStrategy.invokeLifecycle;
@@ -41,7 +44,7 @@ export class ProcessFilePage extends BasePageComponent {
     this.stateSubscriptions.push(
       this.store.state.subscribe((newState) => {
         this.state = cloneDeep(newState);
-        //this.state.import.currentHistoryId = 88;
+        //this.state.import.currentHistoryId = 114;
       })
     );
 
@@ -49,6 +52,7 @@ export class ProcessFilePage extends BasePageComponent {
       this.router.navigateToRoute("upload-file");
     }
 
+    this.operatorList = [];
     this.uploadResultData = [];
     this.paginationData = this.paginationData || { currentPageNumber: 1, totalPages: undefined };
     this.currentRouteConfig = routeConfig;
@@ -92,6 +96,9 @@ export class ProcessFilePage extends BasePageComponent {
     if (resp.status == "Ok") {
       row.approved = true;
       row.excluded = false;
+
+      const index = this.uploadResultData.indexOf(row);
+      this.uploadResultData.splice(index, 1, resp.result);
 
       const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
       if (resp2.status == "Ok") {
@@ -184,20 +191,59 @@ export class ProcessFilePage extends BasePageComponent {
 
   async edit(entry: any) {
 
-    const dialogPromise = new Promise((res, rej) => {
+    const dialogPromise = new Promise(async (res, rej) => {
       const el = document.getElementById('edit-dialog');
       const btnSave: HTMLButtonElement = el.querySelector("button.uk-button-primary");
 
       let resolved = false;
 
-      const saveHandler = () => {
+      const resp = await this.dataService.operator.getList();
+      if (resp.status == "Ok") {
+        this.operatorList = resp.result;
+      }
+
+      const op = this.operatorList.find(o => o.id == entry.lcrOperatorId);
+      if (op) {
+        this.selectedOperatorId = op.id;
+      }
+
+      var picker = new Pikaday({
+        field: el.querySelector('#validUntil'),
+        format: "L"
+      });
+      picker.setDate(entry.lcrDateClose);
+
+      const onEditFinish = () => {
+        picker.destroy();
+        this.selectedOperatorId = undefined;
+        (el.querySelector('#validUntil') as any).value = null;
+      };
+
+      const saveHandler = async () => {
         resolved = true;
         UIkit.modal(el).hide();
+        var moment = picker.getMoment();
+        const op = this.operatorList.find(o => o.id == this.selectedOperatorId);
+        const dateClose = moment._isValid ? moment.format("YYYY-MM-DDTHH:mm:ss") : null;
+
+        const resp = await this.dataService.import.saveRow(
+          this.state.import.currentHistoryId,
+          entry.id,
+          { lcrOperatorId: op.id, lcrDateClose: dateClose }
+        );
+
+        if (resp.status == "Ok") {
+          const index = this.uploadResultData.indexOf(entry);
+          this.uploadResultData.splice(index, 1, resp.result);
+        }
+
+        onEditFinish();
         res();
       };
 
       const cancelhandler = () => {
         if (!resolved) {
+          onEditFinish();
           rej();
         }
       };

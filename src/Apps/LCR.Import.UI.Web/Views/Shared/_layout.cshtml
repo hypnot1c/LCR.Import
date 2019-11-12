@@ -4,7 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
   <meta name="theme-color" content="#ffffff">
-  <base href="/">
+  <environment include="Development">
+    <base href="/">
+  </environment>
+  <environment include="Production">
+    <base href="/">
+  </environment>
   <title>@ViewBag.Title</title>
 
   @RenderSection("styles", false)

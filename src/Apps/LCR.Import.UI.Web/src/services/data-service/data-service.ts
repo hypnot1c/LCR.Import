@@ -75,6 +75,21 @@ export class DataService extends BaseObject {
           method: "POST"
         });
       return resp.json();
+    },
+    saveRow: async (historyId: number, rowId: number, rowData: { lcrOperatorId: number, lcrDateClose: string }) => {
+      const resp = await this.fetchClient.fetch(apiUrls.import.saveRow(historyId, rowId),
+        {
+          method: "POST",
+          body: json(rowData)
+        });
+      return resp.json();
+    }
+  };
+
+  operator = {
+    getList: async () => {
+      var res = await this.fetchClient.fetch(apiUrls.operator.list);
+      return res.json();
     }
   };
 
@@ -83,6 +98,6 @@ export class DataService extends BaseObject {
       var res = await this.fetchClient.fetch(apiUrls.switch.list);
       return res.json();
     }
-  }
+  };
 
 }

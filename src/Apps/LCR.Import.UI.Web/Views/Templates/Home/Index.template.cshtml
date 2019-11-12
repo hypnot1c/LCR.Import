@@ -37,7 +37,7 @@
   </script>
 }
 <% for (key in htmlWebpackPlugin.options.vendorFileNames) { %>
-<script src="/dist/<%= htmlWebpackPlugin.options.vendorFileNames[key] %>"></script>
+<script src="dist/<%= htmlWebpackPlugin.options.vendorFileNames[key] %>"></script>
 <% } %>
 <% for (key in htmlWebpackPlugin.files.chunks) { %><%
       if (htmlWebpackPlugin.files.jsIntegrity) { %>

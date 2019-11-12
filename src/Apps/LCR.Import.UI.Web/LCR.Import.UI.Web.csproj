@@ -21,12 +21,14 @@
     <None Remove="src\config\state\abstractions\index.ts" />
     <None Remove="src\config\state\initial-state.ts" />
     <None Remove="src\main.ts" />
+    <None Remove="src\pages\import-result.ts" />
     <None Remove="src\pages\main.ts" />
     <None Remove="src\pages\proccess-file-page.ts" />
     <None Remove="src\pages\upload-file.ts" />
     <None Remove="src\resources\binding-behaviors\intercept-binding-behavior.ts" />
     <None Remove="src\resources\date-picker-custom-attribute.ts" />
     <None Remove="src\resources\date-time-value-converter.ts" />
+    <None Remove="src\resources\value-converters\tg-direction-value-converter.ts" />
     <None Remove="src\services\data-service\abstractions\i-api-urls.ts" />
     <None Remove="src\services\data-service\abstractions\index.ts" />
     <None Remove="src\services\data-service\api-urls.ts" />
@@ -66,6 +68,7 @@
 
   <ItemGroup>
     <Folder Include="Views\" />
+    <Folder Include="Views\Home\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -84,12 +87,14 @@
     <TypeScriptCompile Include="src\config\state\abstractions\index.ts" />
     <TypeScriptCompile Include="src\config\state\initial-state.ts" />
     <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\pages\import-result-page.ts" />
     <TypeScriptCompile Include="src\pages\main.ts" />
     <TypeScriptCompile Include="src\pages\process-file-page.ts" />
     <TypeScriptCompile Include="src\pages\upload-file-page.ts" />
     <TypeScriptCompile Include="src\resources\binding-behaviors\intercept-binding-behavior.ts" />
     <TypeScriptCompile Include="src\resources\custom-attributes\date-picker-custom-attribute.ts" />
     <TypeScriptCompile Include="src\resources\value-converters\date-time-value-converter.ts" />
+    <TypeScriptCompile Include="src\resources\value-converters\tg-direction-value-converter.ts" />
     <TypeScriptCompile Include="src\services\data-service\abstractions\i-api-urls.ts" />
     <TypeScriptCompile Include="src\services\data-service\abstractions\index.ts" />
     <TypeScriptCompile Include="src\services\data-service\api-urls.ts" />

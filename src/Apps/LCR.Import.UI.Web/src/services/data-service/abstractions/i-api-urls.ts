@@ -11,6 +11,10 @@ export interface IApiUrls {
     excludeRow: (historyId: number, rowId: number) => string
     isAllApproved: (historyId: number) => string
     lcrSave: (historyId: number) => string
+    saveRow: (historyId: number, rowId: number) => string
+  },
+  operator: {
+    list: string
   },
   switch: {
     list: string

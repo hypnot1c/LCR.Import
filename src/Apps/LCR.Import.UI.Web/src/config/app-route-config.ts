@@ -23,6 +23,13 @@ let config: RouteConfig[] = [
     moduleId: PLATFORM.moduleName("pages/process-file-page"),
     nav: false,
     title: "Proccess"
+  },
+  {
+    route: "import-result/:id",
+    name: "import-result",
+    moduleId: PLATFORM.moduleName("pages/import-result-page"),
+    nav: false,
+    title: "Result"
   }
 ];
 
