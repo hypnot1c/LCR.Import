@@ -6,12 +6,14 @@ const apiUrls: IApiUrls = {
   },
   import: {
     statusCheck: (historyId: number, userId: number) => `import/${historyId}/user/${userId}/status`,
-    result: (historyId: number, userId: number, queryParams: { page: number, pageSize: number }) => {
+    result: (historyId: number, userId: number, queryParams: any) => {
       let url = `import/${historyId}/user/${userId}/result`;
       const map = [];
       if (queryParams != null) {
         for (let i in queryParams) {
-          map.push(`${i}=${queryParams[i]}`);
+          if (!!queryParams[i]) {
+            map.push(`${i}=${queryParams[i]}`);
+          }
         }
         url = `${url}?${map.join('&')}`;
       }

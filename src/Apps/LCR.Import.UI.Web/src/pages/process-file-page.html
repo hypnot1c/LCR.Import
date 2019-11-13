@@ -48,9 +48,9 @@
         </div>
         <div class="uk-grid uk-grid-small">
           <div class="uk-width-1-6">
-            <select class="uk-select uk-form-small" value="null">
-              <option value="null">Показать всё</option>
-              <option value="1">С изменениями</option>
+            <select class="uk-select uk-form-small" value.bind="selectedFilter" change.trigger="onFilterChanged()">
+              <option value="">Показать всё</option>
+              <option value="1">К утверждению</option>
               <option value="2">С форматными ошибками</option>
               <option value="3">Исключенные</option>
             </select>
@@ -240,12 +240,19 @@
                 <td if.bind="entry.formatFlags"></td>
               </tr>
             </tbody>
-            <tbody else>
+            <tbody if.bind="isLoadInProggress">
               <tr>
                 <td colspan="15">
                   <div class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
                     <div uk-spinner></div>
                   </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody if.bind="!isLoadInProggress && uploadResultData.length == 0">
+              <tr>
+                <td colspan="15" class="uk-text-center">
+                  Нет данных
                 </td>
               </tr>
             </tbody>
@@ -267,7 +274,7 @@
       <h2 class="uk-modal-title">Редактирование</h2>
       <form class="uk-form-horizontal">
         <div class="uk-margin">
-          <label class="uk-form-label" for="form-horizontal-text">Carrier</label>
+            <label class="uk-form-label" for="form-horizontal-text">Carrier</label>
           <div class="uk-form-controls">
             <select class="uk-select uk-form-small"
                     value.bind="selectedOperatorId">

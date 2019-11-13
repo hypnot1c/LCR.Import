@@ -35,6 +35,7 @@ export class ProcessFilePage extends BasePageComponent {
   allRowsAreApproved: boolean;
   operatorList: any[];
   selectedOperatorId: number;
+  selectedFilter: string;
 
   determineActivationStrategy() {
     return activationStrategy.invokeLifecycle;
@@ -44,7 +45,7 @@ export class ProcessFilePage extends BasePageComponent {
     this.stateSubscriptions.push(
       this.store.state.subscribe((newState) => {
         this.state = cloneDeep(newState);
-        //this.state.import.currentHistoryId = 114;
+        this.state.import.currentHistoryId = 180;
       })
     );
 
@@ -60,6 +61,8 @@ export class ProcessFilePage extends BasePageComponent {
 
     params.page = params.page || 1;
     this.paginationData.currentPageNumber = parseInt(params.page);
+    this.selectedFilter = params.rowFilter;
+
     if (this.importStep != 2) {
       this.importStep = 0;
       this.importStatus = "Форматный контроль...";
@@ -69,10 +72,11 @@ export class ProcessFilePage extends BasePageComponent {
     else {
       this.isLoadInProggress = true;
 
+      const rowFilter = this.selectedFilter == "null" ? null : this.selectedFilter;
       const resp = await this.dataService.import.getResult(
         this.state.import.currentHistoryId,
-        params.page,
-        { page: this.paginationData.currentPageNumber, pageSize: 10 }
+        1,
+        { page: this.paginationData.currentPageNumber, pageSize: 50, rowFilter: rowFilter }
       );
 
       this.uploadResultData = resp.result.data;
@@ -169,10 +173,11 @@ export class ProcessFilePage extends BasePageComponent {
 
         this.isLoadInProggress = true;
 
+        const rowFilter = this.selectedFilter;
         const resp = await this.dataService.import.getResult(
           historyId,
           1,
-          { page: this.paginationData.currentPageNumber, pageSize: 10 }
+          { page: this.paginationData.currentPageNumber, pageSize: 50, rowFilter: rowFilter }
         );
 
         this.uploadResultData = resp.result.data;
@@ -257,6 +262,18 @@ export class ProcessFilePage extends BasePageComponent {
       .then(() => { this.Logger.info("SAVED!") })
       .catch(() => { this.Logger.info("CANCELED!") })
       ;
+  }
+
+  onFilterChanged() {
+    const routeParams: any = {
+      page: 1
+    };
+
+    if (this.selectedFilter) {
+      routeParams.rowFilter = this.selectedFilter;
+    }
+
+    this.router.navigateToRoute("process-file", routeParams);
   }
 
   async lcrSave() {

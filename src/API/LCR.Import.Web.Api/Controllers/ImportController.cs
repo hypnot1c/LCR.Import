@@ -44,7 +44,7 @@ namespace LCR.Import.Web.Api.Controllers
     }
 
     [HttpGet("{id}/user/{userId:int}/result")]
-    public async Task<IActionResult> GetResult(decimal id, int userId = 1, int page = 1, int pageSize = 10)
+    public async Task<IActionResult> GetResult(decimal id, int userId = 1, int page = 1, int pageSize = 50, int? rowFilter = null)
     {
       var data = this.TPMContext.ImportResults
         .Where(d => d.UploadHistoryId == id)
@@ -52,6 +52,21 @@ namespace LCR.Import.Web.Api.Controllers
         .OrderBy(rd => rd.DataRowId)
         .AsQueryable()
         ;
+
+      switch(rowFilter)
+      {
+        case 1:
+          data = data.Where(i => i.FormatFlags == null && (i.LogicFlags == 2 || (i.LogicFlags != 0 && i.LogicFlags != 16)) && i.Approved != true);
+          break;
+        case 2:
+          data = data.Where(i => i.FormatFlags != null);
+          break;
+        case 3:
+          data = data.Where(i => i.Excluded == true);
+          break;
+        default:
+          break;
+      }
 
       var tempres = await data.ToListAsync();
 
@@ -120,11 +135,11 @@ namespace LCR.Import.Web.Api.Controllers
 
       mappedData.Approved = vm.Approved;
       mappedData.Excluded = false;
+      mappedData.LCRDateClose = mappedData.LCRDateClose ?? mappedData.FileDateClose;
 
       if (mappedData.LCRTGId == null)
       {
         mappedData.LCRDateOpen = mappedData.FileDateOpen;
-        mappedData.LCRDateClose = mappedData.LCRDateClose ?? mappedData.FileDateClose;
         mappedData.LCRDirection = mappedData.FileDirection;
         mappedData.LCROperatorId = mappedData.LCROperatorId ?? mappedData.FileOperatorId;
       }
@@ -168,7 +183,7 @@ namespace LCR.Import.Web.Api.Controllers
         )
         ;
 
-      if(!isAllApproved)
+      if (!isAllApproved)
       {
         this.Logger.LogError("Not all rows are approved for saving");
         return StatusCode(400, new { Status = "Error" });

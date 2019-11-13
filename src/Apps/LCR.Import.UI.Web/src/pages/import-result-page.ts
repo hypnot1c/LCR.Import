@@ -56,7 +56,7 @@ export class ImportResultPage extends BasePageComponent {
       this.dataService.import.getResult(
         this.state.import.currentHistoryId,
         params.page,
-        { page: this.paginationData.currentPageNumber, pageSize: 10 }
+        { page: this.paginationData.currentPageNumber, pageSize: 50 }
       )
     ]);
 
