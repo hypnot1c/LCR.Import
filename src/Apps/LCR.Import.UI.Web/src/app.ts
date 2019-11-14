@@ -42,6 +42,7 @@ export class App extends BasePageComponent {
     config.title = "LCR Import";
     config.options.pushState = true;
     config.map(routeConfig.routes);
+    config.options.root = appConfig.root;
 
     this.router = router;
   }

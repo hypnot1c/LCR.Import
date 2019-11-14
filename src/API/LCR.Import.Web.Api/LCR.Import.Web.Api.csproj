@@ -10,6 +10,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="web.Release.config" />
+    <Content Remove="web.Testing.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="web.Release.config">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="web.Testing.config">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
@@ -40,9 +54,6 @@
 
   <ItemGroup>
     <Content Update="web.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="web.Release.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

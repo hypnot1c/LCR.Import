@@ -12,9 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="web.Release.config" />
+    <Content Remove="web.Testing.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="src\app.ts" />
     <None Remove="src\config.ts" />
     <None Remove="src\config\app-config-prod.ts" />
+    <None Remove="src\config\app-config-test.ts" />
     <None Remove="src\config\app-route-config.ts" />
     <None Remove="src\config\environment.ts" />
     <None Remove="src\config\state\abstractions\i-app-state.ts" />
@@ -73,6 +79,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="web.Release.config" />
+    <None Include="web.Testing.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Helpers\Helpers.AspNet\Helpers.AspNet.csproj" />
   </ItemGroup>
 
@@ -80,6 +91,7 @@
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\components\pagination-component.ts" />
     <TypeScriptCompile Include="src\config\app-config-prod.ts" />
+    <TypeScriptCompile Include="src\config\app-config-test.ts" />
     <TypeScriptCompile Include="src\config\app-config.ts" />
     <TypeScriptCompile Include="src\config\app-route-config.ts" />
     <TypeScriptCompile Include="src\config\environment.ts" />

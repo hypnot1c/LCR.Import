@@ -117,7 +117,9 @@ namespace LCR.Import.Web.Api.Controllers
     {
       var isAllApproved = !(await this.TPMContext.ImportMappedData
         .Where(md => md.UploadHistoryId == id)
-        .AnyAsync(r => (r.Approved == null || !r.Approved.Value) && !r.Excluded)
+        .Where(r => !r.Excluded)
+        .Where(r => r.Flags != 2)
+        .AnyAsync(r => (r.Approved == null || !r.Approved.Value))
         )
         ;
 
