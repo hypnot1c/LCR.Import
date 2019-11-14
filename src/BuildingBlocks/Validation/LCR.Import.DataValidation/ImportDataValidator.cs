@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.Validators;
 using LCR.TPM.Model;
 using System;
+using System.Globalization;
 
 namespace LCR.Import.DataValidation
 {
@@ -9,6 +10,8 @@ namespace LCR.Import.DataValidation
   {
     public ImportDataValidator()
     {
+      var russianCulture = new CultureInfo("ru-RU");
+      var usCulture = new CultureInfo("en-US");
       RuleFor(c => c.DataRowId).Cascade(CascadeMode.StopOnFirstFailure)
         .NotNull().WithErrorCode("2")
         //.Must(c => Int32.TryParse(c, out var res)).WithErrorCode("2")
@@ -32,16 +35,50 @@ namespace LCR.Import.DataValidation
 
       RuleFor(c => c.DateOpen).Cascade(CascadeMode.StopOnFirstFailure)
         .NotNull().WithErrorCode("16")
-        .Must(val => DateTime.TryParse(val, out var dateOpen)).WithErrorCode("16");
+        .Must(val =>
+        {
+          try
+          {
+            var date = DateTime.Parse(val, russianCulture);
+            return true;
+          }
+          catch
+          {
+            try
+            {
+              var date = DateTime.Parse(val, usCulture);
+              return true;
+            }
+            catch
+            {
+              return false;
+            }
+          }
+        }).WithErrorCode("16");
 
       RuleFor(c => c.DateClose)
         .Must(val =>
         {
-          if ((!String.IsNullOrEmpty(val) && !DateTime.TryParse(val, out var dateClose)))
+          if (!String.IsNullOrEmpty(val))
           {
-            return false;
+            try
+            {
+              var date = DateTime.Parse(val, russianCulture);
+              return true;
+            }
+            catch
+            {
+              try
+              {
+                var date = DateTime.Parse(val, usCulture);
+                return true;
+              }
+              catch
+              {
+                return false;
+              }
+            }
           }
-
           return true;
         }).WithErrorCode("32");
     }
