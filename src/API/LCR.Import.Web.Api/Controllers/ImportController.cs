@@ -76,7 +76,7 @@ namespace LCR.Import.Web.Api.Controllers
     }
 
     [HttpGet("history")]
-    public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10)
+    public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10, DateTime? dateFrom = null, DateTime? dateTo = null, int? switchId = null)
     {
       var data = this.Mapper.ProjectTo<ImportHistoryViewModel>(this.TPMContext.UploadHistory
         .Where(h => h.Step == ImportStep.Saved)
@@ -84,6 +84,20 @@ namespace LCR.Import.Web.Api.Controllers
         )
         .AsQueryable()
         ;
+
+      if(dateFrom != null)
+      {
+        data = data.Where(d => d.DateUpload >= dateFrom);
+      }
+      if (dateTo != null)
+      {
+        data = data.Where(d => d.DateUpload >= dateTo);
+      }
+      if (switchId != null)
+      {
+        data = data.Where(d => d.SwitchId == switchId);
+      }
+
 
       var switches = await this.DataService.Switch_GetListAsync();
 

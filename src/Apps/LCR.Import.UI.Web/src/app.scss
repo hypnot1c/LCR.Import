@@ -6,6 +6,40 @@ $global-font-size: 14px;
 
 @import 'node_modules/pikaday/scss/pikaday.scss';
 
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#main, #main-app-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.main-router-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+}
+
+main.app {
+  display: block;
+  width: 100%;
+}
+
+.frame {
+  position: absolute;
+  top: 0;
+  right: 0;
+  overflow: auto;
+  height: 100%;
+}
+
+
 
 .js-upload:hover {
   background-color: rgba(30, 135, 240, .2);

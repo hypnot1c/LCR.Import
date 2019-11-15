@@ -24,7 +24,9 @@ const apiUrls: IApiUrls = {
       const map = [];
       if (queryParams != null) {
         for (let i in queryParams) {
-          map.push(`${i}=${queryParams[i]}`);
+          if (!!queryParams[i]) {
+            map.push(`${i}=${queryParams[i]}`);
+          }
         }
         url = `${url}?${map.join('&')}`;
       }

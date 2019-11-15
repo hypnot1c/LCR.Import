@@ -4,6 +4,7 @@ import { Store } from "aurelia-store";
 import cloneDeep from "clone-deep";
 import UIkit from "uikit";
 import Pikaday from "pikaday";
+import ruI18n from "config/date-picker-config";
 
 import { IAppState } from "config/state/abstractions";
 import { BasePageComponent } from "shared/components";
@@ -45,7 +46,6 @@ export class ProcessFilePage extends BasePageComponent {
     this.stateSubscriptions.push(
       this.store.state.subscribe((newState) => {
         this.state = cloneDeep(newState);
-        //this.state.import.currentHistoryId = 180;
       })
     );
 
@@ -214,6 +214,8 @@ export class ProcessFilePage extends BasePageComponent {
 
       var picker = new Pikaday({
         field: el.querySelector('#validUntil'),
+        firstDay: 1,
+        i18n: ruI18n,
         format: "L"
       });
       picker.setDate(entry.lcrDateClose);

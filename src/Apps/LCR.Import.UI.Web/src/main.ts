@@ -1,6 +1,7 @@
 import * as Bluebird from "bluebird";
 import { Aurelia, LogManager, PLATFORM } from "aurelia-framework";
 import { ConsoleAppender } from "aurelia-logging-console";
+import moment from "moment";
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import "whatwg-fetch";
@@ -16,21 +17,23 @@ Bluebird.config({ warnings: false });
 UIkit.use(Icons);
 
 export async function configure(aurelia: Aurelia) {
-    let aureliaConfig = aurelia.use
-        .standardConfiguration()
-        .plugin(PLATFORM.moduleName("aurelia-validation"))
-        .plugin(PLATFORM.moduleName("aurelia-store"), { initialState });
+  const locale = (window.navigator as any).userLanguage || window.navigator.language;
+  moment.locale(locale);
+  let aureliaConfig = aurelia.use
+    .standardConfiguration()
+    .plugin(PLATFORM.moduleName("aurelia-validation"))
+    .plugin(PLATFORM.moduleName("aurelia-store"), { initialState });
 
-    if (appConfig.Environment < Environment.PROD) {
-        aureliaConfig = aureliaConfig.developmentLogging();
-    }
-    if (appConfig.Environment > Environment.DEV) {
-    }
-    if (appConfig.Environment == Environment.PROD) {
-        LogManager.addAppender(new ConsoleAppender());
-        LogManager.setLevel(LogManager.logLevel.warn);
-    }
+  if (appConfig.Environment < Environment.PROD) {
+    aureliaConfig = aureliaConfig.developmentLogging();
+  }
+  if (appConfig.Environment > Environment.DEV) {
+  }
+  if (appConfig.Environment == Environment.PROD) {
+    LogManager.addAppender(new ConsoleAppender());
+    LogManager.setLevel(LogManager.logLevel.warn);
+  }
 
-    await aurelia.start();
-    await aurelia.setRoot(PLATFORM.moduleName("app"));
+  await aurelia.start();
+  await aurelia.setRoot(PLATFORM.moduleName("app"));
 }

@@ -22,6 +22,7 @@
     <None Remove="src\config\app-config-prod.ts" />
     <None Remove="src\config\app-config-test.ts" />
     <None Remove="src\config\app-route-config.ts" />
+    <None Remove="src\config\date-picker-config.ts" />
     <None Remove="src\config\environment.ts" />
     <None Remove="src\config\state\abstractions\i-app-state.ts" />
     <None Remove="src\config\state\abstractions\index.ts" />
@@ -94,6 +95,7 @@
     <TypeScriptCompile Include="src\config\app-config-test.ts" />
     <TypeScriptCompile Include="src\config\app-config.ts" />
     <TypeScriptCompile Include="src\config\app-route-config.ts" />
+    <TypeScriptCompile Include="src\config\date-picker-config.ts" />
     <TypeScriptCompile Include="src\config\environment.ts" />
     <TypeScriptCompile Include="src\config\state\abstractions\i-app-state.ts" />
     <TypeScriptCompile Include="src\config\state\abstractions\index.ts" />

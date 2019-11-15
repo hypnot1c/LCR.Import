@@ -1,5 +1,7 @@
 import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction, activationStrategy } from "aurelia-router";
+import Pikaday from "pikaday";
+import ruI18n from "config/date-picker-config";
 
 import { BasePageComponent } from "shared/components";
 import { DataService } from "services";
@@ -14,6 +16,15 @@ export class MainPage extends BasePageComponent {
     this.uploadHistory = [];
   }
 
+  switchList: any[];
+  selectedSwitch: number;
+  selectedDateFrom: string;
+  selectedDateTo: string;
+
+  dateFrom: any;
+  dateTo: any;
+  private params: any;
+
   uploadHistory: any[];
   isLoadInProggress: boolean;
   paginationData: { currentPageNumber: number, totalPages: number }
@@ -21,7 +32,7 @@ export class MainPage extends BasePageComponent {
   currentRouteParams: any;
 
   determineActivationStrategy() {
-    return activationStrategy.replace;
+    return activationStrategy.invokeLifecycle;
   }
 
   async activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction)
@@ -35,7 +46,9 @@ export class MainPage extends BasePageComponent {
     params.page = params.page || 1;
     this.paginationData.currentPageNumber = parseInt(params.page);
 
-    this.dataService.import.getHistory({ page: params.page, pageSize: 10 })
+    this.params = params;
+
+    this.dataService.import.getHistory(params)
       .then(resp => {
         if (resp.status != "Ok") {
           this.Logger.error("Error fetching upload history");
@@ -46,6 +59,54 @@ export class MainPage extends BasePageComponent {
         this.isLoadInProggress = false;
       })
       ;
+  }
+
+  async attached() {
+    await this.initFilters();
+  }
+
+  async initFilters() {
+    const switchPromise = this.dataService.switch.getList();
+
+    this.dateFrom = new Pikaday({
+      field: document.querySelector('#dateFrom'),
+      firstDay: 1,
+      i18n: ruI18n,
+      format: "L"
+    });
+
+    this.dateTo = new Pikaday({
+      field: document.querySelector('#dateTo'),
+      firstDay: 1,
+      i18n: ruI18n,
+      format: "L"
+    });
+
+    const dateFrom = this.params.dateFrom || null;
+    const dateTo = this.params.dateTo || null;
+
+    this.dateFrom.setDate(dateFrom);
+    this.dateTo.setDate(dateTo);
+    this.selectedSwitch = parseInt(this.params.switchId) || null;
+
+    this.switchList = await switchPromise;
+  }
+
+  clearInput(picker: any) {
+    picker.setDate(null);
+  }
+
+  filter() {
+    const params: any = { page: this.paginationData.currentPageNumber, pageSize: 10 };
+
+    const dateFromMoment = this.dateFrom.getMoment();
+    const dateToMoment = this.dateTo.getMoment();
+
+    params.switchId = this.selectedSwitch;
+    params.dateFrom = dateFromMoment._isValid ? dateFromMoment.format("YYYY-MM-DDTHH:mm:ss") : null;
+    params.dateTo = dateToMoment._isValid ? dateToMoment.format("YYYY-MM-DDTHH:mm:ss") : null;
+
+    this.router.navigateToRoute("root", params);
   }
 
   async uploadFile() {
