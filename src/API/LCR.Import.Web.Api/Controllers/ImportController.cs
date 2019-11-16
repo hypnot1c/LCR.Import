@@ -91,7 +91,7 @@ namespace LCR.Import.Web.Api.Controllers
       }
       if (dateTo != null)
       {
-        data = data.Where(d => d.DateUpload >= dateTo);
+        data = data.Where(d => d.DateUpload <= dateTo);
       }
       if (switchId != null)
       {
