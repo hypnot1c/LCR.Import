@@ -13,10 +13,20 @@ export function setCurrentHistoryId(state: IAppState, currentHistoryId: number)
   return newState;
 }
 
+export function setCurrentUserId(state: IAppState, newUserId: number)
+  : IAppState {
+  const newState: IAppState = cloneDeep(state);
+
+  newState.userId = newUserId;
+
+  return newState;
+}
+
 const store: Store<IAppState> = Container.instance.get<Store<IAppState>>(Store);
 
 const actions = {
-  "import:setCurrentHistoryId": setCurrentHistoryId
+  "import:setCurrentHistoryId": setCurrentHistoryId,
+  "import:setCurrentUserId": setCurrentUserId
 };
 
 for (let action in actions) {

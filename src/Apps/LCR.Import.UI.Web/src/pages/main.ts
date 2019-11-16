@@ -1,15 +1,21 @@
 import { autoinject } from "aurelia-framework";
 import { Router, RouteConfig, NavigationInstruction, activationStrategy } from "aurelia-router";
+import { Store } from "aurelia-store";
+import cloneDeep from "clone-deep";
 import Pikaday from "pikaday";
 import ruI18n from "config/date-picker-config";
 
+import { IAppState } from "config/state/abstractions";
 import { BasePageComponent } from "shared/components";
 import { DataService } from "services";
+import * as importStateActions from "config/state/actions/import-state-actions";
+
 
 @autoinject
 export class MainPage extends BasePageComponent {
   constructor(
     private dataService: DataService,
+    protected store: Store<IAppState>,
     private router: Router
   ) {
     super("MainPage");
@@ -31,13 +37,25 @@ export class MainPage extends BasePageComponent {
   currentRouteConfig: RouteConfig;
   currentRouteParams: any;
 
+  state: IAppState;
+
   determineActivationStrategy() {
     return activationStrategy.invokeLifecycle;
   }
 
   async activate(params: any, routeConfig: RouteConfig, navigationInstruction: NavigationInstruction)
     : Promise<any> {
-    this.Logger.info("activate");
+    this.stateSubscriptions.push(
+      this.store.state.subscribe((newState) => {
+        this.state = cloneDeep(newState);
+      })
+    );
+
+    if (params.userId) {
+      const userId = parseInt(params.userId);
+      await this.store.dispatch(importStateActions.setCurrentUserId, userId);
+    }
+
     this.paginationData = { currentPageNumber: 1, totalPages: undefined };
     this.isLoadInProggress = true;
     this.currentRouteConfig = routeConfig;

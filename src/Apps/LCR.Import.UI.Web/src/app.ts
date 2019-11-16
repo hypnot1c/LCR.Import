@@ -1,18 +1,15 @@
 import { autoinject } from "aurelia-framework";
-import { Router, RouterConfiguration, NavigationInstruction, RouteConfig } from "aurelia-router";
+import { Router, RouterConfiguration } from "aurelia-router";
 import { HttpClient as FetchClient } from "aurelia-fetch-client";
 import { HttpClient } from "aurelia-http-client";
 import { Store, logMiddleware, MiddlewarePlacement } from "aurelia-store";
-import { pluck } from "rxjs/operators";
-import cloneDeep from "clone-deep";
 
+import { BasePageComponent } from "shared/components";
 import { Environment } from "config/environment";
 import appConfig from "config/app-config";
 import routeConfig from "./config/app-route-config";
-
 import { IAppState } from "./config/state/abstractions";
 
-import { BasePageComponent } from "shared/components";
 
 @autoinject
 export class App extends BasePageComponent {
@@ -31,12 +28,6 @@ export class App extends BasePageComponent {
   }
 
   state: IAppState;
-
-  async activate(params, route: RouteConfig, navigationInstruction: NavigationInstruction) {
-  }
-
-  attached() {
-  }
 
   configureRouter(config: RouterConfiguration, router: Router) {
     config.title = "LCR Import";
