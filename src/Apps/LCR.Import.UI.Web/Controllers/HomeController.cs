@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -7,9 +8,18 @@ namespace LCR.Import.UI.Web.Controllers
 {
   public class HomeController : Controller
   {
+    public HomeController(
+      ILogger<HomeController> logger
+      )
+    {
+      this.Logger = logger;
+    }
+
+    public ILogger<HomeController> Logger { get; }
+
     public IActionResult Index(string protectedUserId)
     {
-      if(!String.IsNullOrEmpty(protectedUserId))
+      if (!String.IsNullOrEmpty(protectedUserId))
       {
         var userId = this.Unprotect(protectedUserId, null, DataProtectionScope.LocalMachine);
         return RedirectToAction("Index", new { userId = userId });
