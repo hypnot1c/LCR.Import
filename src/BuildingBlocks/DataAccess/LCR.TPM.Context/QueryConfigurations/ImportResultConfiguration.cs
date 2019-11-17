@@ -1,14 +1,18 @@
 using LCR.TPM.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LCR.TPM.Context.Configurations
 {
   public class ImportResultConfiguration : IQueryTypeConfiguration<ImportResultQueryModel>
   {
+    public ImportResultConfiguration(TPMContext ctx)
+    {
+      this.DbContext = ctx;
+    }
+
+    public TPMContext DbContext { get; }
+
     public void Configure(QueryTypeBuilder<ImportResultQueryModel> builder)
     {
       builder.Property(p => p.Id).HasColumnName("ID");
@@ -38,6 +42,56 @@ namespace LCR.TPM.Context.Configurations
       builder.Property(p => p.LCROperatorName).HasColumnName("LCR_OPERATORNAME");
       builder.Property(p => p.Approved).HasColumnName("APPROVED");
       builder.Property(p => p.Excluded).HasColumnName("EXCLUDED");
+
+      builder.ToQuery(() => this.DbContext.ImportResults
+        .FromSql(@"
+          SELECT
+	          urd.ID,
+            urd.DARAROWID,
+	          urd.UPLOADHISTORYID,
+	          urd.TRUNKGROUPNAME,
+	          urd.TRUNKGROUPTYPE,
+            urd.DIRECTION,
+	          urd.OPERATORSNETWORKCONNECTLVL,
+	          urd.PAIREDSWITCHOPERATORFULLNAME,
+	          urd.RTNETWORKCONNECTIONLEVEL,
+	          urd.SWITCHOPERATORNAME,
+            urd.VALIDFROM,
+            urd.VALIDUNTIL,
+	          ufe.ERRORFLAGS as FORMATFLAGS,
+	          umd.Flags as LOGICFLAGS,
+	          umd.FILE_TGOPERATORID,
+	          umd.FILE_DIRECTION,
+	          umd.FILE_VALIDFROM,
+	          umd.FILE_VALIDUNTIL,
+	          fop.NAME as FILE_OPERATORNAME,
+	          umd.LCR_TGID,
+	          umd.LCR_TGOPERATORID,
+	          umd.LCR_DIRECTION,
+	          umd.LCR_VALIDFROM,
+	          umd.LCR_VALIDUNTIL,
+	          lop.NAME as LCR_OPERATORNAME,
+	          umd.APPROVED,
+	          umd.EXCLUDED
+          FROM
+	          UPLOAD_RAWDATA urd
+	          LEFT JOIN
+		          UPLOAD_FORMATERRORS ufe
+		          ON
+			          urd.ID = ufe.UPLOADRAWDATAID
+	          LEFT JOIN
+		          UPLOAD_MAPPEDDATA umd
+		          ON
+			          urd.ID = umd.UPLOADRAWDATAID
+	          LEFT JOIN
+		          (select DISTINCT ID, supplier_name as NAME from table(lcr_tg_import_iapi.get_carrier_lst)) fop
+		          ON
+			          umd.FILE_TGOPERATORID = fop.ID
+	          LEFT JOIN
+		          (select DISTINCT ID, supplier_name as NAME from table(lcr_tg_import_iapi.get_carrier_lst)) lop
+		          ON
+			          umd.LCR_TGOPERATORID = lop.ID
+        "));
     }
   }
 }

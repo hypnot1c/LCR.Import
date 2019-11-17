@@ -7,7 +7,7 @@
       </ul>
     </section>
     <section class="uk-padding-small uk-background-muted">
-      <div class="uk-flex uk-flex-center uk-flex-middle">
+      <section show.bind="!isValid || !files" class="uk-flex uk-flex-center uk-flex-middle">
         <div class="uk-form-controls uk-text-center">
           <div class="uk-margin-small-bottom" validation-errors.bind="selectedSwitchErrors">
             <select class="uk-select uk-form-width-large"
@@ -46,7 +46,7 @@
           </div>
           <button class="uk-button uk-button-primary" click.trigger="uploadFile()">Загрузить</button>
         </div>
-      </div>
+      </section>
       <section show.bind="isValid" class="uk-flex uk-flex-column uk-flex-center uk-flex-middle">
         <div uk-spinner="ratio: 2"></div>
         <div class="uk-text-normal">${uploadStatus}</div>

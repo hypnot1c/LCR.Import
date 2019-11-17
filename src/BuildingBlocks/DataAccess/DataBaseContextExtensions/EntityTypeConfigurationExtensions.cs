@@ -46,7 +46,7 @@ namespace DataBaseContextExtensions
       return modelBuilder;
     }
 
-    public static ModelBuilder UseQueryTypeConfiguration(this ModelBuilder modelBuilder, Assembly extenstionsAssembly)
+    public static ModelBuilder UseQueryTypeConfiguration(this ModelBuilder modelBuilder, DbContext ctx, Assembly extenstionsAssembly)
     {
       if (!queryTypesPerAssembly.TryGetValue(extenstionsAssembly, out IEnumerable<Type> configurationTypes))
       {
@@ -70,7 +70,7 @@ namespace DataBaseContextExtensions
          );
       }
 
-      var configurations = configurationTypes.Select(x => Activator.CreateInstance(x));
+      var configurations = configurationTypes.Select(x => Activator.CreateInstance(x, ctx));
 
       foreach (dynamic configuration in configurations)
       {

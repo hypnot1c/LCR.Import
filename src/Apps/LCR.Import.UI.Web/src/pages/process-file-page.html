@@ -6,7 +6,8 @@
   <require from="resources/custom-attributes/date-picker-custom-attribute"></require>
   <require from="./partials/rows/approved-row.html"></require>
   <require from="./process-file-page.scss"></require>
-  <article>
+
+  <article style="position: relative;">
     <section class="uk-padding-small">
       <ul class="uk-breadcrumb">
         <li><a route-href="route: root">История</a></li>
@@ -48,7 +49,7 @@
         </div>
         <div class="uk-grid uk-grid-small">
           <div class="uk-width-1-6">
-            <select class="uk-select uk-form-small" value.bind="selectedFilter" change.trigger="onFilterChanged()">
+            <select class="uk-select uk-form-small" value.bind="selectedFilter" change.delegate="onFilterChanged()">
               <option value="">Показать всё</option>
               <option value="1">К утверждению</option>
               <option value="2">С форматными ошибками</option>
@@ -189,7 +190,7 @@
                 </td>
 
                 <td if.bind="!entry.formatFlags && !entry.approved && !entry.excluded" style="min-width: 50px;">
-                  <button class="uk-button uk-button-link uk-button-small">
+                  <button class="uk-button uk-button-link uk-button-small" type="button">
                     <span uk-icon="icon: more-vertical"></span>
                   </button>
                   <div uk-dropdown>

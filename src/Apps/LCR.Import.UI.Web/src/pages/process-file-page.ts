@@ -46,6 +46,7 @@ export class ProcessFilePage extends BasePageComponent {
     this.stateSubscriptions.push(
       this.store.state.subscribe((newState) => {
         this.state = cloneDeep(newState);
+        this.state.import.currentHistoryId = 220;
       })
     );
 
@@ -102,7 +103,7 @@ export class ProcessFilePage extends BasePageComponent {
       row.excluded = false;
 
       const index = this.uploadResultData.indexOf(row);
-      this.uploadResultData.splice(index, 1, resp.result);
+      this.uploadResultData. splice(index, 1, resp.result);
 
       const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
       if (resp2.status == "Ok") {
@@ -195,7 +196,6 @@ export class ProcessFilePage extends BasePageComponent {
   }
 
   async edit(entry: any) {
-
     const dialogPromise = new Promise(async (res, rej) => {
       const el = document.getElementById('edit-dialog');
       const btnSave: HTMLButtonElement = el.querySelector("button.uk-button-primary");
@@ -221,6 +221,8 @@ export class ProcessFilePage extends BasePageComponent {
       picker.setDate(entry.lcrDateClose);
 
       const onEditFinish = () => {
+        btnSave.removeEventListener("click", saveHandler);
+        el.removeEventListener("hidden", cancelhandler);
         picker.destroy();
         this.selectedOperatorId = undefined;
         (el.querySelector('#validUntil') as any).value = null;
@@ -255,8 +257,8 @@ export class ProcessFilePage extends BasePageComponent {
         }
       };
 
-      btnSave.addEventListener("click", saveHandler, { once: true });
-      el.addEventListener("hidden", cancelhandler, { once: true });
+      btnSave.addEventListener("click", saveHandler);
+      el.addEventListener("hidden", cancelhandler);
       UIkit.modal(el).show();
     });
 
