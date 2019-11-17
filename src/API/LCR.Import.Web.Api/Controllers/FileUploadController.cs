@@ -1,4 +1,5 @@
 using LCR.Import.Web.Api.Resources;
+using LCR.Import.Web.Api.ViewModels;
 using LCR.TPM.Context;
 using LCR.TPM.Model;
 using Microsoft.AspNetCore.Http;
@@ -51,17 +52,25 @@ namespace LCR.Import.Web.Api.Controllers
       try
       {
         var userId = vm.UserId;
-
         var fileName = Path.GetFileName(file.FileName);
-
-        var storageDayPath = Path.Combine(this.StorageDirectoryPath, DateTime.Now.ToShortDateString(), userId.ToString());
+        var storageDayPath = Path.Combine(this.StorageDirectoryPath, DateTime.Now.ToString("yyyy-MM-dd"), userId.ToString());
 
         if (!Directory.Exists(storageDayPath))
         {
           Directory.CreateDirectory(storageDayPath);
         }
 
-        var storeFullPath = Path.Combine(storageDayPath, "current.xls");
+        //var unfinishedFiles = Directory.GetFiles(storageDayPath)
+        //  .Where(fn => Path.GetFileName(fn).StartsWith("_current_"))
+        //  .ToList()
+        //  ;
+
+        //if (unfinishedFiles.Any())
+        //{
+        //  unfinishedFiles.ForEach(System.IO.File.Delete);
+        //}
+
+        var storeFullPath = Path.Combine(storageDayPath, $"{DateTime.Now.Ticks}_{fileName}");
 
         using (var fw = new FileStream(storeFullPath, FileMode.Create))
         {
@@ -80,8 +89,15 @@ namespace LCR.Import.Web.Api.Controllers
         this.TPMContext.UploadHistory.Add(history);
         await this.TPMContext.SaveChangesAsync();
 
-        var command = new ProccessFileCommand { UserId = userId, ImportHistoryId = history.Id, FilePath = storeFullPath };
+        var command = new ProccessFileCommand
+        {
+          UserId = userId,
+          ImportHistoryId = history.Id,
+          FilePath = storeFullPath
+        };
+
         this.FileCommandQueue.Enqueue(command);
+
         return Ok(new { Status = "Ok", HistoryId = history.Id });
       }
       catch (Exception ex)
@@ -90,12 +106,5 @@ namespace LCR.Import.Web.Api.Controllers
         return StatusCode(500, "Unexpected error");
       }
     }
-  }
-
-  public class UploadRequest
-  {
-    public int UserId { get; set; }
-    public int SwitchId { get; set; }
-    public IFormFile File { get; set; }
   }
 }
