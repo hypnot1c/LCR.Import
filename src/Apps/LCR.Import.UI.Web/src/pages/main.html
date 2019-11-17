@@ -28,7 +28,7 @@
             </div>
           </div>
         </div>
-        <div>
+        <div class="uk-width-1-3">
           <span class="uk-text-normal">Коммутатор</span>
           <select class="uk-select uk-margin-small-top uk-form-small"
                   value.bind="selectedSwitch">
@@ -39,9 +39,16 @@
             </option>
           </select>
         </div>
-        <div>
+        <div class="uk-width-1-3">
           <span class="uk-text-normal">Пользователь</span>
-          <select class="uk-select uk-margin-small-top uk-form-small"></select>
+          <select class="uk-select uk-margin-small-top uk-form-small"
+                  value.bind="selectedUser">
+            <option model.bind="null">Выберите пользователя...</option>
+            <option repeat.for="user of userList"
+                    model.bind="user.id">
+              ${user.lastname} ${user.firstname}
+            </option>
+          </select>
         </div>
       </div>
       <div class="uk-grid">
@@ -91,7 +98,7 @@
                 ${entry.switchName}
               </td>
               <td>
-                ${entry.userId}
+                ${entry.lastname} ${entry.firstname}
               </td>
               <td>
                 ${entry.rowsAffected}

@@ -100,4 +100,11 @@ export class DataService extends BaseObject {
     }
   };
 
+  users = {
+    getList: async () => {
+      const res = await this.fetchClient.fetch(apiUrls.users.list);
+      return res.json();
+    }
+  }
+
 }

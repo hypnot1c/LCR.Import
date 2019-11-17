@@ -12,5 +12,6 @@ namespace LCR.DataService.Abstractions
     Task MappedData_SetRowFlagsAsync(decimal uploadHistoryId, decimal rawDataId);
     Task Import_SaveAsync(decimal uploadHistoryId);
     Task<IEnumerable<OperatorModel>> Operator_GetListAsync();
+    Task<IEnumerable<UserQueryModel>> User_GetListAsync();
   }
 }

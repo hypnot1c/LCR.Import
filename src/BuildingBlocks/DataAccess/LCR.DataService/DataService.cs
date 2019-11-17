@@ -163,5 +163,10 @@ namespace LCR.DataService
     {
       return await this.TPMContext.Operators.ToListAsync();
     }
+
+    public async Task<IEnumerable<UserQueryModel>> User_GetListAsync()
+    {
+      return await this.TPMContext.Users.ToListAsync();
+    }
   }
 }

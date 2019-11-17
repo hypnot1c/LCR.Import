@@ -53,7 +53,7 @@ namespace LCR.Import.Web.Api.Controllers
         .AsQueryable()
         ;
 
-      switch(rowFilter)
+      switch (rowFilter)
       {
         case 1:
           data = data.Where(i => i.FormatFlags == null && (i.LogicFlags == 2 || (i.LogicFlags != 0 && i.LogicFlags != 16)) && i.Approved != true);
@@ -76,16 +76,15 @@ namespace LCR.Import.Web.Api.Controllers
     }
 
     [HttpGet("history")]
-    public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10, DateTime? dateFrom = null, DateTime? dateTo = null, int? switchId = null)
+    public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10, DateTime? dateFrom = null, DateTime? dateTo = null, int? switchId = null, int? filterUserId = null)
     {
-      var data = this.Mapper.ProjectTo<ImportHistoryViewModel>(this.TPMContext.UploadHistory
+      var data = this.TPMContext.UploadHistoryResults
         .Where(h => h.Step == ImportStep.Saved)
         .OrderByDescending(h => h.DateUpload)
-        )
         .AsQueryable()
         ;
 
-      if(dateFrom != null)
+      if (dateFrom != null)
       {
         data = data.Where(d => d.DateUpload >= dateFrom);
       }
@@ -97,15 +96,14 @@ namespace LCR.Import.Web.Api.Controllers
       {
         data = data.Where(d => d.SwitchId == switchId);
       }
-
+      if (filterUserId != null)
+      {
+        data = data.Where(d => d.UserId == filterUserId);
+      }
 
       var switches = await this.DataService.Switch_GetListAsync();
 
-      var result = await PaginatedList<ImportHistoryViewModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
-      result.ForEach(i =>
-      {
-        i.SwitchName = switches.SingleOrDefault(s => s.Id == i.SwitchId)?.Name;
-      });
+      var result = await PaginatedList<UploadHistoryQueryModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
 
       return Ok(new { Status = "Ok", result = new { data = result, result.TotalPages, result.Count } });
     }

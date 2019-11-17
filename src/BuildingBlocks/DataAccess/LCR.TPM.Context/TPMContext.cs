@@ -24,6 +24,8 @@ namespace LCR.TPM.Context
     public DbSet<ImportMappedDataModel> ImportMappedData { get; set; }
     public DbQuery<SwitchModel> Switches { get; set; }
     public DbQuery<OperatorModel> Operators { get; set; }
+    public DbQuery<UserQueryModel> Users { get; set; }
     public DbQuery<ImportResultQueryModel> ImportResults { get; set; }
+    public DbQuery<UploadHistoryQueryModel> UploadHistoryResults { get; set; }
   }
 }

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace LCR.Import.Web.Api.Controllers
 {
-  public class SwitchController : BaseApiController
+  public class UsersController : BaseApiController
   {
-    public SwitchController(
+    public UsersController(
       IDataService dataService,
-      ILogger<SwitchController> logger
+      ILogger<UsersController> logger
       ) : base(logger)
     {
       this.DataService = dataService;
@@ -20,14 +20,10 @@ namespace LCR.Import.Web.Api.Controllers
 
     public IDataService DataService { get; }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<SwitchModel>>> GetList()
+    public async Task<ActionResult<IEnumerable<UserQueryModel>>> GetList()
     {
-      var list = (await this.DataService.Switch_GetListAsync())
-        .OrderBy(s => s.Name)
-        ;
-
-      return Ok(new { Status = "Ok", result = list });
+      var users = await this.DataService.User_GetListAsync();
+      return Ok(new { Status = "Ok", result = users.OrderBy(u => u.Lastname + " " + u.Firstname) });
     }
   }
 }

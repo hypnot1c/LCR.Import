@@ -24,6 +24,9 @@ export class MainPage extends BasePageComponent {
 
   switchList: any[];
   selectedSwitch: number;
+  userList: any[];
+  selectedUser: number;
+
   selectedDateFrom: string;
   selectedDateTo: string;
 
@@ -84,7 +87,10 @@ export class MainPage extends BasePageComponent {
   }
 
   async initFilters() {
-    const switchPromise = this.dataService.switch.getList();
+    const promises = Promise.all([
+      this.dataService.switch.getList(),
+      this.dataService.users.getList()
+    ]);
 
     this.dateFrom = new Pikaday({
       field: document.querySelector('#dateFrom'),
@@ -106,8 +112,11 @@ export class MainPage extends BasePageComponent {
     this.dateFrom.setDate(dateFrom);
     this.dateTo.setDate(dateTo);
     this.selectedSwitch = parseInt(this.params.switchId) || null;
+    this.selectedUser = parseInt(this.params.filterUserId) || null;
 
-    this.switchList = await switchPromise;
+    const [switches, users] = await promises;
+    this.switchList = switches.result;
+    this.userList = users.result;
   }
 
   clearInput(picker: any) {
@@ -121,6 +130,7 @@ export class MainPage extends BasePageComponent {
     const dateToMoment = this.dateTo.getMoment();
 
     params.switchId = this.selectedSwitch;
+    params.filterUserId = this.selectedUser;
     params.dateFrom = dateFromMoment._isValid ? dateFromMoment.format("YYYY-MM-DDTHH:mm:ss") : null;
     params.dateTo = dateToMoment._isValid ? dateToMoment.format("YYYY-MM-DDTHH:mm:ss") : null;
 

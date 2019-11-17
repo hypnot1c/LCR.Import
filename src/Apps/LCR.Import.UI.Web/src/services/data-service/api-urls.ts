@@ -46,6 +46,10 @@ const apiUrls: IApiUrls = {
 
   switch: {
     list: "switch"
+  },
+
+  users: {
+    list: "users"
   }
 }
 

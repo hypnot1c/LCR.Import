@@ -18,5 +18,8 @@ export interface IApiUrls {
   },
   switch: {
     list: string
+  },
+  users: {
+    list: string
   }
 }
