@@ -46,7 +46,6 @@ export class ProcessFilePage extends BasePageComponent {
     this.stateSubscriptions.push(
       this.store.state.subscribe((newState) => {
         this.state = cloneDeep(newState);
-        this.state.import.currentHistoryId = 220;
       })
     );
 
