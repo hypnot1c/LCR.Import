@@ -51,7 +51,8 @@ export class UploadFilePage extends BasePageComponent {
       })
     );
 
-    this.switchList = await this.dataService.switch.getList();
+    const resp = await this.dataService.switch.getList();
+    this.switchList = resp.result;
   }
 
   showFileName() {
