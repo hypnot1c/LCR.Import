@@ -26,6 +26,9 @@ export class ImportResultPage extends BasePageComponent {
   currentRouteConfig: RouteConfig;
   currentRouteParams: any;
 
+  selectedSortFieldName: string;
+  sortDirection: 'asc' | 'desc';
+
   summary: any;
 
   determineActivationStrategy() {
@@ -47,16 +50,22 @@ export class ImportResultPage extends BasePageComponent {
     this.currentRouteParams = params || {};
 
     params.page = params.page || 1;
+    params.pageSize = 50;
+    params.sortField = params.sortField || "dataRowId";
+    params.sortDirection = params.sortDirection || "asc";
+
+    this.selectedSortFieldName = params.sortField;
+    this.sortDirection = params.sortDirection;
+
     this.paginationData.currentPageNumber = parseInt(params.page);
     this.isLoadInProggress = true;
-
 
     const [summaryResp, resp] = await Promise.all([
       this.dataService.import.getImportSummary(this.state.import.currentHistoryId),
       this.dataService.import.getResult(
         this.state.import.currentHistoryId,
-        params.page,
-        { page: this.paginationData.currentPageNumber, pageSize: 50 }
+        this.state.userId,
+        params
       )
     ]);
 
@@ -65,5 +74,39 @@ export class ImportResultPage extends BasePageComponent {
     this.uploadResultData = resp.result.data;
     this.paginationData.totalPages = resp.result.totalPages;
     this.isLoadInProggress = false;
+  }
+
+  onSortChanged() {
+    const params: any = { page: this.paginationData.currentPageNumber, pageSize: 50 };
+
+    params.sortField = this.selectedSortFieldName;
+    params.sortDirection = this.sortDirection;
+    params.id = this.currentRouteParams.id;
+
+    this.router.navigateToRoute("import-result", params);
+  }
+
+  onTableHeaderClick(event: Event) {
+    const el: HTMLElement = (event.target || event.srcElement) as HTMLElement;
+    const fieldName = el.dataset["fieldName"];
+    if (fieldName) {
+      if (this.selectedSortFieldName == fieldName) {
+        switch (this.sortDirection) {
+          case "asc":
+            this.sortDirection = "desc";
+            break;
+          case "desc":
+          default:
+            this.sortDirection = "asc";
+            break;
+        }
+      }
+      else {
+        this.sortDirection = 'asc';
+        this.selectedSortFieldName = fieldName;
+      }
+
+      this.onSortChanged();
+    }
   }
 }

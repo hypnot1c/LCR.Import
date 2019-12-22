@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <None Remove="src\app.ts" />
+    <None Remove="src\components\table-header-component.ts" />
     <None Remove="src\config.ts" />
     <None Remove="src\config\app-config-prod.ts" />
     <None Remove="src\config\app-config-test.ts" />
@@ -75,6 +76,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="src\icons\" />
     <Folder Include="Views\" />
     <Folder Include="Views\Home\" />
     <Folder Include="wwwroot\" />
@@ -92,6 +94,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\components\pagination-component.ts" />
+    <TypeScriptCompile Include="src\components\table-header-component.ts" />
     <TypeScriptCompile Include="src\config\app-config-prod.ts" />
     <TypeScriptCompile Include="src\config\app-config-test.ts" />
     <TypeScriptCompile Include="src\config\app-config.ts" />

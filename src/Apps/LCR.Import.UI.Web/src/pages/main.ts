@@ -22,6 +22,8 @@ export class MainPage extends BasePageComponent {
     this.uploadHistory = [];
   }
 
+  state: IAppState;
+
   switchList: any[];
   selectedSwitch: number;
   userList: any[];
@@ -40,7 +42,8 @@ export class MainPage extends BasePageComponent {
   currentRouteConfig: RouteConfig;
   currentRouteParams: any;
 
-  state: IAppState;
+  selectedSortFieldName: string;
+  sortDirection: 'asc' | 'desc';
 
   determineActivationStrategy() {
     return activationStrategy.invokeLifecycle;
@@ -63,11 +66,16 @@ export class MainPage extends BasePageComponent {
     this.isLoadInProggress = true;
     this.currentRouteConfig = routeConfig;
     this.currentRouteParams = params || {};
-
     params.page = params.page || 1;
+    params.sortField = params.sortField || "dateUpload";
+    params.sortDirection = params.sortDirection || "desc";
+
     this.paginationData.currentPageNumber = parseInt(params.page);
 
     this.params = params;
+
+    this.selectedSortFieldName = this.params.sortField;
+    this.sortDirection = this.params.sortDirection;
 
     this.dataService.import.getHistory(params)
       .then(resp => {
@@ -134,10 +142,37 @@ export class MainPage extends BasePageComponent {
     params.dateFrom = dateFromMoment._isValid ? dateFromMoment.format("YYYY-MM-DDTHH:mm:ss") : null;
     params.dateTo = dateToMoment._isValid ? dateToMoment.format("YYYY-MM-DDTHH:mm:ss") : null;
 
+    params.sortField = this.selectedSortFieldName;
+    params.sortDirection = this.sortDirection;
+
     this.router.navigateToRoute("root", params);
   }
 
   async uploadFile() {
     this.router.navigateToRoute("upload-file");
+  }
+
+  onTableHeaderClick(event: Event) {
+    const el: HTMLElement = (event.target || event.srcElement) as HTMLElement;
+    const fieldName = el.dataset["fieldName"];
+    if (fieldName) {
+      if (this.selectedSortFieldName == fieldName) {
+        switch (this.sortDirection) {
+          case "asc":
+            this.sortDirection = "desc";
+            break;
+          case "desc":
+          default:
+            this.sortDirection = "asc";
+            break;
+        }
+      }
+      else {
+        this.sortDirection = 'asc';
+        this.selectedSortFieldName = fieldName;
+      }
+
+      this.filter();
+    }
   }
 }

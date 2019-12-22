@@ -1,5 +1,6 @@
 <template>
   <require from="components/pagination-component"></require>
+  <require from="components/table-header-component"></require>
   <require from="resources/value-converters/date-time-value-converter"></require>
   <require from="./main.scss"></require>
 
@@ -66,7 +67,7 @@
       </div>
     </section>
     <section>
-      <template if.bind="paginationData.totalPages">
+      <template if.bind="paginationData">
         <pagination-component current-page.bind="paginationData.currentPageNumber"
                               total-pages.bind="paginationData.totalPages"
                               route-config.bind="currentRouteConfig"
@@ -77,12 +78,32 @@
       <section class="tbl-history uk-margin">
         <table class="uk-table uk-table-divider uk-table-striped uk-table-hover">
           <thead>
-            <tr>
-              <th>Дата и время</th>
-              <th>Наименование файла</th>
-              <th>Коммутатор</th>
-              <th>Пользователь</th>
-              <th>Изменено записей</th>
+            <tr click.trigger="onTableHeaderClick($event)">
+              <th>
+                <table-header-component field-name="dateUpload" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Дата и время
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="fileName" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Наименование файла
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="switchName" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Коммутатор
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="lastname" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Пользователь
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="rowsAffected" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Изменено записей
+                </table-header-component>
+              </th>
               <th></th>
             </tr>
           </thead>
@@ -123,7 +144,7 @@
           </section>
         </template>
       </section>
-      <template if.bind="paginationData.totalPages">
+      <template if.bind="paginationData">
         <pagination-component current-page.bind="paginationData.currentPageNumber"
                               total-pages.bind="paginationData.totalPages"
                               route-config.bind="currentRouteConfig"

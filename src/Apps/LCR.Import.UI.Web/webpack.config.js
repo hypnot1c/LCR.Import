@@ -134,13 +134,25 @@ module.exports = (env, argv) => {
           test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/,
           loader: "expose-loader?Promise"
         },
-        // embed small images and fonts as Data Urls and larger ones as files:
+        //// embed small images and fonts as Data Urls and larger ones as files:
+        //{
+        //  test: /\.(png|gif|jpg|cur)$/i,
+        //  loader: "url-loader",
+        //  options: {
+        //    limit: 8192
+        //  }
+        //},
         {
-          test: /\.(png|gif|jpg|cur)$/i,
-          loader: "url-loader",
-          options: {
-            limit: 8192
-          }
+          test: /\.(png)(\?v=\d+\.\d+\.\d+)?$/,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                name: "[name].[ext]",
+                outputPath: "icons/"
+              }
+            }
+          ]
         },
         // load these fonts normally, as files:
         {

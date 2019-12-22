@@ -44,12 +44,14 @@ namespace LCR.Import.Web.Api.Controllers
     }
 
     [HttpGet("{id}/user/{userId:int}/result")]
-    public async Task<IActionResult> GetResult(decimal id, int userId = 1, int page = 1, int pageSize = 50, int? rowFilter = null)
+    public async Task<IActionResult> GetResult(decimal id, int userId = 1,
+      int page = 1, int pageSize = 50, int? rowFilter = null,
+      string sortField = "dataRowId", string sortDirection = "asc"
+      )
     {
       var data = this.TPMContext.ImportResults
         .Where(d => d.UploadHistoryId == id)
         //.Where(d => d.FormatFlags == null)
-        .OrderBy(rd => rd.DataRowId)
         .AsQueryable()
         ;
 
@@ -68,6 +70,37 @@ namespace LCR.Import.Web.Api.Controllers
           break;
       }
 
+      switch (sortField)
+      {
+        case "dataRowId":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.DataRowId) : data.OrderByDescending(d => d.DataRowId);
+          break;
+        case "channelBundleName":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.ChannelBundleName) : data.OrderByDescending(d => d.ChannelBundleName);
+          break;
+        case "pairedSwitchOperatorFullName":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.PairedSwitchOperatorFullName) : data.OrderByDescending(d => d.PairedSwitchOperatorFullName);
+          break;
+        case "directionType":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.DirectionType) : data.OrderByDescending(d => d.DirectionType);
+          break;
+        case "rtNetworkConnectionLevel":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.RTNetworkConnectionLevel) : data.OrderByDescending(d => d.RTNetworkConnectionLevel);
+          break;
+        case "fileDateOpen":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.FileDateOpen) : data.OrderByDescending(d => d.FileDateOpen);
+          break;
+        case "fileDateClose":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.FileDateClose) : data.OrderByDescending(d => d.FileDateClose);
+          break;
+        case "lcrDateOpen":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.LCRDateOpen) : data.OrderByDescending(d => d.LCRDateOpen);
+          break;
+        case "lcrDateClose":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.LCRDateClose) : data.OrderByDescending(d => d.LCRDateClose);
+          break;
+      }
+
       var tempres = await data.ToListAsync();
 
       var result = await PaginatedList<ImportResultQueryModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
@@ -76,11 +109,14 @@ namespace LCR.Import.Web.Api.Controllers
     }
 
     [HttpGet("history")]
-    public async Task<IActionResult> GetUploadHistory(int page = 1, int pageSize = 10, DateTime? dateFrom = null, DateTime? dateTo = null, int? switchId = null, int? filterUserId = null)
+    public async Task<IActionResult> GetUploadHistory(
+      int page = 1, int pageSize = 10,
+      DateTime? dateFrom = null, DateTime? dateTo = null, int? switchId = null, int? filterUserId = null,
+      string sortField = "dateUpload", string sortDirection = "desc"
+      )
     {
       var data = this.TPMContext.UploadHistoryResults
         .Where(h => h.Step == ImportStep.Saved)
-        .OrderByDescending(h => h.DateUpload)
         .AsQueryable()
         ;
 
@@ -101,7 +137,24 @@ namespace LCR.Import.Web.Api.Controllers
         data = data.Where(d => d.UserId == filterUserId);
       }
 
-      var switches = await this.DataService.Switch_GetListAsync();
+      switch(sortField)
+      {
+        case "dateUpload":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.DateUpload) : data.OrderByDescending(d => d.DateUpload);
+          break;
+        case "fileName":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.FileName) : data.OrderByDescending(d => d.FileName);
+          break;
+        case "switchName":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.SwitchName) : data.OrderByDescending(d => d.SwitchName);
+          break;
+        case "lastname":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.Lastname + " " + d.Firstname) : data.OrderByDescending(d => d.Lastname + " " + d.Firstname);
+          break;
+        case "rowsAffected":
+          data = sortDirection == "asc" ? data.OrderBy(d => d.RowsAffected) : data.OrderByDescending(d => d.RowsAffected);
+          break;
+      }
 
       var result = await PaginatedList<UploadHistoryQueryModel>.CreateAsync(data.AsNoTracking(), page, pageSize);
 

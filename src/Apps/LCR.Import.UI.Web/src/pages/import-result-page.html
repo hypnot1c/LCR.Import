@@ -1,5 +1,6 @@
 <template>
   <require from="components/pagination-component"></require>
+  <require from="components/table-header-component"></require>
   <require from="resources/value-converters/date-time-value-converter"></require>
   <require from="resources/value-converters/tg-direction-value-converter"></require>
   <require from="./import-result-page.scss"></require>
@@ -37,7 +38,7 @@
       </div>
     </section>
     <section class="uk-margin-small">
-      <template if.bind="paginationData.totalPages">
+      <template if.bind="paginationData">
         <pagination-component current-page.bind="paginationData.currentPageNumber"
                               total-pages.bind="paginationData.totalPages"
                               route-config.bind="currentRouteConfig"
@@ -56,22 +57,62 @@
               </th>
               <th></th>
             </tr>
-            <tr>
-              <th>№</th>
-              <th>Транковая группа</th>
-              <th>Оператор-владелец коммутатора</th>
-              <th>Полное наименование оператора</th>
-              <th>Тип направления</th>
+            <tr click.trigger="onTableHeaderClick($event)">
+              <th>
+                <table-header-component field-name="dataRowId" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  №
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="channelBundleName" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Транковая группа
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="switchOperatorName" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Оператор-владелец коммутатора
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="pairedSwitchOperatorFullName" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Полное наименование оператора
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="directionType" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Тип направления
+                </table-header-component>
+              </th>
               <th>Исх./Вх.</th>
               <th>Урв. присоед. опер.</th>
-              <th>Урв. просоед. РТ</th>
-              <th>Дата начала действия</th>
-              <th>Дата закрытия</th>
+              <th>
+                <table-header-component field-name="rtNetworkConnectionLevel" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Урв. просоед. РТ
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="fileDateOpen" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Дата начала действия
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="fileDateClose" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  Дата закрытия
+                </table-header-component>
+              </th>
               <th>Carrier (File)</th>
               <th>Carrier</th>
               <th>Dir.</th>
-              <th>ValidFrom</th>
-              <th>ValidUntil</th>
+              <th>
+                <table-header-component field-name="lcrDateOpen" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  ValidFrom
+                </table-header-component>
+              </th>
+              <th>
+                <table-header-component field-name="lcrDateClose" sort-field-name.bind="selectedSortFieldName" sort-direction.bind="sortDirection">
+                  ValidUntil
+                </table-header-component>
+              </th>
               <th></th>
             </tr>
           </thead>
@@ -126,7 +167,7 @@
           </tbody>
         </table>
       </div>
-      <template if.bind="paginationData.totalPages">
+      <template if.bind="paginationData">
         <pagination-component current-page.bind="paginationData.currentPageNumber"
                               total-pages.bind="paginationData.totalPages"
                               route-config.bind="currentRouteConfig"

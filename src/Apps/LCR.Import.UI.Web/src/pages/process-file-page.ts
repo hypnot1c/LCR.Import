@@ -38,6 +38,9 @@ export class ProcessFilePage extends BasePageComponent {
   selectedOperatorId: number;
   selectedFilter: string;
 
+  selectedSortFieldName: string;
+  sortDirection: 'asc' | 'desc';
+
   determineActivationStrategy() {
     return activationStrategy.invokeLifecycle;
   }
@@ -60,6 +63,13 @@ export class ProcessFilePage extends BasePageComponent {
     this.currentRouteParams = params || {};
 
     params.page = params.page || 1;
+    params.pageSize = 50;
+    params.sortField = params.sortField || "dataRowId";
+    params.sortDirection = params.sortDirection || "asc";
+
+    this.selectedSortFieldName = params.sortField;
+    this.sortDirection = params.sortDirection;
+
     this.paginationData.currentPageNumber = parseInt(params.page);
     this.selectedFilter = params.rowFilter;
 
@@ -72,11 +82,11 @@ export class ProcessFilePage extends BasePageComponent {
     else {
       this.isLoadInProggress = true;
 
-      const rowFilter = this.selectedFilter == "null" ? null : this.selectedFilter;
+      params.rowFilter = this.selectedFilter == "null" ? null : this.selectedFilter;
       const resp = await this.dataService.import.getResult(
         this.state.import.currentHistoryId,
-        1,
-        { page: this.paginationData.currentPageNumber, pageSize: 50, rowFilter: rowFilter }
+        this.state.userId,
+        params
       );
 
       this.uploadResultData = resp.result.data;
@@ -276,7 +286,45 @@ export class ProcessFilePage extends BasePageComponent {
       routeParams.rowFilter = this.selectedFilter;
     }
 
+    routeParams.sortField = this.selectedSortFieldName;
+    routeParams.sortDirection = this.sortDirection;
+    routeParams.id = this.currentRouteParams.id;
+
     this.router.navigateToRoute("process-file", routeParams);
+  }
+
+  onSortChanged() {
+    const params: any = { page: this.paginationData.currentPageNumber, pageSize: 50 };
+
+    params.sortField = this.selectedSortFieldName;
+    params.sortDirection = this.sortDirection;
+    params.id = this.currentRouteParams.id;
+
+    this.router.navigateToRoute("process-file", params);
+  }
+
+  onTableHeaderClick(event: Event) {
+    const el: HTMLElement = (event.target || event.srcElement) as HTMLElement;
+    const fieldName = el.dataset["fieldName"];
+    if (fieldName) {
+      if (this.selectedSortFieldName == fieldName) {
+        switch (this.sortDirection) {
+          case "asc":
+            this.sortDirection = "desc";
+            break;
+          case "desc":
+          default:
+            this.sortDirection = "asc";
+            break;
+        }
+      }
+      else {
+        this.sortDirection = 'asc';
+        this.selectedSortFieldName = fieldName;
+      }
+
+      this.onSortChanged();
+    }
   }
 
   async lcrSave() {
