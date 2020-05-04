@@ -1,36 +1,51 @@
 <template>
-  <ul class="uk-pagination uk-flex-center uk-margin-remove">
-    <template if.bind="currentPage == 1">
-      <li class="uk-disable"><span><span uk-pagination-previous></span></span></li>
-    </template>
-    <template else>
-      <li class="uk-active">
-        <a href.bind="prevPageUrl" class="uk-link-toggle">
-          <span uk-pagination-previous class="uk-link-heading"></span>
-        </a>
-      </li>
-    </template>
-    <template repeat.for="page of pageMap">
-      <template if.bind="page != '...' && page.number != currentPage">
-        <li class="uk-active">
-          <a route-href="route.bind: routeName; params.bind: page.params" class="uk-link-heading">${page.number}</a>
-        </li>
+  <require from="./pagination-component.scss"></require>
+  <div class="pg-wrapper uk-flex uk-flex-center uk-flex-middle uk-padding-small">
+    <ul class="uk-pagination uk-flex-center uk-margin-remove">
+      <template if.bind="currentPage == 1">
+        <li class="uk-disable"><span><span uk-pagination-previous></span></span></li>
       </template>
       <template else>
         <li class="uk-active">
-          <span><span>${page.number || page}</span></span>
+          <a href.bind="prevPageUrl" class="uk-link-toggle">
+            <span uk-pagination-previous class="uk-link-heading"></span>
+          </a>
         </li>
       </template>
+      <template repeat.for="page of pageMap">
+        <template if.bind="page != '...' && page.number != currentPage">
+          <li class="uk-active">
+            <a route-href="route.bind: routeName; params.bind: page.params" class="uk-link-heading">${page.number}</a>
+          </li>
+        </template>
+        <template else>
+          <li class="uk-active">
+            <span><span>${page.number || page}</span></span>
+          </li>
+        </template>
+      </template>
+      <template if.bind="currentPage == totalPages">
+        <li class="uk-disable"><span><span uk-pagination-next></span></span></li>
+      </template>
+      <template else>
+        <li class="uk-active">
+          <a href.bind="nextPageUrl" class="uk-link-toggle">
+            <span uk-pagination-next class="uk-link-heading"></span>
+          </a>
+        </li>
+      </template>
+    </ul>
+    <template if.bind="pageSize">
+      <div class="pg-size">
+        <button class="uk-button uk-button-default" type="button">Размер страницы: ${pageSize}</button>
+        <div uk-dropdown="mode: click">
+          <ul class="uk-nav uk-dropdown-nav">
+            <template repeat.for="size of pageSizes">
+              <li class.bind="size == pageSize ? 'uk-active': ''" click.delegate="changePageSize(size)"><a href="#">${size}</a></li>
+            </template>
+          </ul>
+        </div>
+      </div>
     </template>
-    <template if.bind="currentPage == totalPages">
-      <li class="uk-disable"><span><span uk-pagination-next></span></span></li>
-    </template>
-    <template else>
-      <li class="uk-active">
-        <a href.bind="nextPageUrl" class="uk-link-toggle">
-          <span uk-pagination-next class="uk-link-heading"></span>
-        </a>
-      </li>
-    </template>
-  </ul>
+  </div>
 </template>

@@ -69,13 +69,13 @@
     <section>
       <template if.bind="paginationData">
         <pagination-component current-page.bind="paginationData.currentPageNumber"
+                              page-size.bind="paginationData.pageSize"
                               total-pages.bind="paginationData.totalPages"
                               route-config.bind="currentRouteConfig"
                               route-params.bind="currentRouteParams">
-
         </pagination-component>
       </template>
-      <section class="tbl-history uk-margin">
+      <section class="tbl-history">
         <table class="uk-table uk-table-divider uk-table-striped uk-table-hover">
           <thead>
             <tr click.trigger="onTableHeaderClick($event)">
@@ -146,6 +146,7 @@
       </section>
       <template if.bind="paginationData">
         <pagination-component current-page.bind="paginationData.currentPageNumber"
+                              page-size.bind="paginationData.pageSize"
                               total-pages.bind="paginationData.totalPages"
                               route-config.bind="currentRouteConfig"
                               route-params.bind="currentRouteParams">

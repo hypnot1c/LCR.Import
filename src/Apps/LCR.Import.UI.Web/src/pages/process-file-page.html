@@ -71,10 +71,10 @@
       <section class="uk-margin-small">
         <template if.bind="paginationData">
           <pagination-component current-page.bind="paginationData.currentPageNumber"
+                                page-size.bind="paginationData.pageSize"
                                 total-pages.bind="paginationData.totalPages"
                                 route-config.bind="currentRouteConfig"
                                 route-params.bind="currentRouteParams">
-
           </pagination-component>
         </template>
         <div class="uk-overflow-auto">
@@ -302,10 +302,10 @@
         </div>
         <template if.bind="paginationData">
           <pagination-component current-page.bind="paginationData.currentPageNumber"
+                                page-size.bind="paginationData.pageSize"
                                 total-pages.bind="paginationData.totalPages"
                                 route-config.bind="currentRouteConfig"
                                 route-params.bind="currentRouteParams">
-
           </pagination-component>
         </template>
       </section>

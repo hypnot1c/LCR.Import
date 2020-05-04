@@ -14,6 +14,7 @@ export class PaginantionComponent extends BaseComponent {
   }
 
   @bindable currentPage: number;
+  @bindable pageSize: number;
   @bindable totalPages: number;
   @bindable routeConfig: RouteConfig;
   @bindable routeParams: any;
@@ -21,6 +22,8 @@ export class PaginantionComponent extends BaseComponent {
   prevPageUrl: any;
   nextPageUrl: any;
   pageMap: any[];
+
+  private pageSizes: number[] = [10, 20, 50, 100, 500];
 
   currentPageChanged() {
     this.bind();
@@ -30,8 +33,11 @@ export class PaginantionComponent extends BaseComponent {
     this.bind();
   }
 
+  pageSizeChanged() {
+    this.bind();
+  }
+
   bind() {
-    this.Logger.info("bind");
     if (!!this.routeParams) {
       this.routeName = this.routeConfig.name;
       if (this.currentPage > 1) {
@@ -95,5 +101,15 @@ export class PaginantionComponent extends BaseComponent {
         }
       }
     }
+  }
+
+  private changePageSize(newPageSize: number) {
+    if (newPageSize === this.pageSize) {
+      return false;
+    }
+
+    const pageParams = cloneDeep(this.routeParams);
+    pageParams.pageSize = newPageSize;
+    this.router.navigateToRoute(this.routeName, pageParams);
   }
 }

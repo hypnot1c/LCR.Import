@@ -1,7 +1,7 @@
 import * as Bluebird from "bluebird";
 import { Aurelia, LogManager, PLATFORM } from "aurelia-framework";
 import { ConsoleAppender } from "aurelia-logging-console";
-import moment from "moment";
+import moment from 'moment/moment';
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import "whatwg-fetch";

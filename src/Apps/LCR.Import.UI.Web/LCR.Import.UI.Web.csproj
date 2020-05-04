@@ -51,6 +51,7 @@
     <None Remove="src\shared\components\abstractions\index.ts" />
     <None Remove="src\shared\components\index.ts" />
     <None Remove="src\shared\index.ts" />
+    <None Remove="src\typings\custom.d.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,12 +68,6 @@
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.6.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="package-lock.json">
-      <DependentUpon>package.json</DependentUpon>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -127,6 +122,7 @@
     <TypeScriptCompile Include="src\shared\components\abstractions\index.ts" />
     <TypeScriptCompile Include="src\shared\components\index.ts" />
     <TypeScriptCompile Include="src\shared\index.ts" />
+    <TypeScriptCompile Include="src\typings\custom.d.ts" />
   </ItemGroup>
 
   <Target Name="BuildFrontEnd" BeforeTargets="MvcRazorPrecompile">

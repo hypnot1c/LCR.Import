@@ -38,7 +38,7 @@ export class MainPage extends BasePageComponent {
 
   uploadHistory: any[];
   isLoadInProggress: boolean;
-  paginationData: { currentPageNumber: number, totalPages: number }
+  paginationData: { currentPageNumber: number, pageSize: number, totalPages: number }
   currentRouteConfig: RouteConfig;
   currentRouteParams: any;
 
@@ -62,14 +62,16 @@ export class MainPage extends BasePageComponent {
       await this.store.dispatch(importStateActions.setCurrentUserId, userId);
     }
 
-    this.paginationData = { currentPageNumber: 1, totalPages: undefined };
+    this.paginationData = { currentPageNumber: 1, pageSize: 10, totalPages: undefined };
     this.isLoadInProggress = true;
     this.currentRouteConfig = routeConfig;
     this.currentRouteParams = params || {};
     params.page = params.page || 1;
+    params.pageSize = params.pageSize || 10;
     params.sortField = params.sortField || "dateUpload";
     params.sortDirection = params.sortDirection || "desc";
 
+    this.paginationData.pageSize = parseInt(params.pageSize);
     this.paginationData.currentPageNumber = parseInt(params.page);
 
     this.params = params;
@@ -132,7 +134,7 @@ export class MainPage extends BasePageComponent {
   }
 
   filter() {
-    const params: any = { page: this.paginationData.currentPageNumber, pageSize: 10 };
+    const params: any = { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize };
 
     const dateFromMoment = this.dateFrom.getMoment();
     const dateToMoment = this.dateTo.getMoment();

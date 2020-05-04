@@ -18,7 +18,7 @@
     "allowSyntheticDefaultImports": true,
     "incremental": true
   },
-  "filesGlob": ["./src/**/*.ts", "./test/**/*.ts", "./src/custom.d.ts"],
+  "filesGlob": ["./src/**/*.ts", "./test/**/*.ts", "./src/typings/custom.d.ts"],
   "exclude": ["node_modules", "wwwroot/jspm_packages"],
   "atom": {
     "rewriteTsconfig": false

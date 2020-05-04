@@ -22,7 +22,7 @@ export class ImportResultPage extends BasePageComponent {
 
   uploadResultData: any[];
   isLoadInProggress: boolean;
-  paginationData: { currentPageNumber: number, totalPages: number }
+  paginationData: { currentPageNumber: number, pageSize: number, totalPages: number }
   currentRouteConfig: RouteConfig;
   currentRouteParams: any;
 
@@ -45,18 +45,19 @@ export class ImportResultPage extends BasePageComponent {
     await this.store.dispatch(importStateActions.setCurrentHistoryId, params.id);
 
     this.uploadResultData = [];
-    this.paginationData = this.paginationData || { currentPageNumber: 1, totalPages: undefined };
+    this.paginationData = this.paginationData || { currentPageNumber: 1, pageSize: 10, totalPages: undefined };
     this.currentRouteConfig = routeConfig;
     this.currentRouteParams = params || {};
 
     params.page = params.page || 1;
-    params.pageSize = 50;
+    params.pageSize = params.pageSize || 10;
     params.sortField = params.sortField || "dataRowId";
     params.sortDirection = params.sortDirection || "asc";
 
     this.selectedSortFieldName = params.sortField;
     this.sortDirection = params.sortDirection;
 
+    this.paginationData.pageSize = parseInt(params.pageSize);
     this.paginationData.currentPageNumber = parseInt(params.page);
     this.isLoadInProggress = true;
 

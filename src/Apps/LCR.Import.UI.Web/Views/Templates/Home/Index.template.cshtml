@@ -1,14 +1,14 @@
 @model bool
 
 @section styles {
-  <% for (key in htmlWebpackPlugin.files.css) { %><%
+  <% for (entry of htmlWebpackPlugin.files.css) { %><%
   if (htmlWebpackPlugin.files.cssIntegrity) { %>
-  <link type="text/css" href="<%= htmlWebpackPlugin.files.css[key] %>"
+  <link type="text/css" href="<%= entry %>"
         rel="stylesheet"
-        integrity="<%= htmlWebpackPlugin.files.cssIntegrity[key] %>"
+        integrity="<%= htmlWebpackPlugin.files.cssIntegrity[entry] %>"
         crossorigin="<%= webpackConfig.output.crossOriginLoading %>" /><%
   } else { %>
-  <link type="text/css" href="<%= htmlWebpackPlugin.files.css[key] %>" rel="stylesheet" /><%
+  <link type="text/css" href="<%= entry %>" rel="stylesheet" /><%
   } %><%
   } %>
 }
@@ -36,16 +36,13 @@
     }
   </script>
 }
-<% for (key in htmlWebpackPlugin.options.vendorFileNames) { %>
-<script src="dist/<%= htmlWebpackPlugin.options.vendorFileNames[key] %>"></script>
-<% } %>
-<% for (key in htmlWebpackPlugin.files.chunks) { %><%
+<% for (entry of htmlWebpackPlugin.files.js) { %><%
       if (htmlWebpackPlugin.files.jsIntegrity) { %>
-<script src="<%= htmlWebpackPlugin.files.chunks[key].entry %>"
+<script src="<%= entry %>"
         type="text/javascript"
-        integrity="<%= htmlWebpackPlugin.files.jsIntegrity[htmlWebpackPlugin.files.js.indexOf(htmlWebpackPlugin.files.chunks[key].entry)] %>"
+        integrity="<%= htmlWebpackPlugin.files.jsIntegrity[htmlWebpackPlugin.files.js.indexOf(entry)] %>"
         crossorigin="<%= webpackConfig.output.crossOriginLoading %>"></script><%
       } else { %>
-<script src="<%= htmlWebpackPlugin.files.chunks[key].entry %>" type="text/javascript"></script><%
+<script src="<%= entry %>" type="text/javascript"></script><%
       } %><%
     } %>
