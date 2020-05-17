@@ -78,7 +78,7 @@ export class ImportResultPage extends BasePageComponent {
   }
 
   onSortChanged() {
-    const params: any = { page: this.paginationData.currentPageNumber, pageSize: 50 };
+    const params: any = { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize };
 
     params.sortField = this.selectedSortFieldName;
     params.sortDirection = this.sortDirection;

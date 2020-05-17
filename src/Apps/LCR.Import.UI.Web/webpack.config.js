@@ -189,6 +189,7 @@ module.exports = (env, argv) => {
         allChunks: true
       }),
       new HtmlWebpackPlugin({
+        minify: false,
         inject: false,
         template: "Views/Templates/Home/Index.template.cshtml",
         filename: "../../Views/Home/Index.cshtml",

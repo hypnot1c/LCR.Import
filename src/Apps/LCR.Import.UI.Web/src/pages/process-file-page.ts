@@ -1,4 +1,5 @@
 import { autoinject } from "aurelia-framework";
+import { EventAggregator } from "aurelia-event-aggregator";
 import { Router, RouteConfig, NavigationInstruction, activationStrategy } from "aurelia-router";
 import { Store } from "aurelia-store";
 import cloneDeep from "clone-deep";
@@ -14,8 +15,9 @@ import * as importStateActions from "config/state/actions/import-state-actions";
 @autoinject
 export class ProcessFilePage extends BasePageComponent {
   constructor(
-    private dataService: DataService,
+    private ea: EventAggregator,
     private router: Router,
+    private dataService: DataService,
     protected store: Store<IAppState>
   ) {
     super("ProcessFilePage");
@@ -37,6 +39,8 @@ export class ProcessFilePage extends BasePageComponent {
   operatorList: any[];
   selectedOperatorId: number;
   selectedFilter: string;
+  selectedRowErrorFlags: number;
+  showErrorDialog: boolean;
 
   selectedSortFieldName: string;
   sortDirection: 'asc' | 'desc';
@@ -113,7 +117,7 @@ export class ProcessFilePage extends BasePageComponent {
       row.excluded = false;
 
       const index = this.uploadResultData.indexOf(row);
-      this.uploadResultData. splice(index, 1, resp.result);
+      this.uploadResultData.splice(index, 1, resp.result);
 
       const resp2 = await this.dataService.import.isAllApproved(this.state.import.currentHistoryId);
       if (resp2.status == "Ok") {
@@ -187,8 +191,8 @@ export class ProcessFilePage extends BasePageComponent {
         const rowFilter = this.selectedFilter;
         const resp = await this.dataService.import.getResult(
           historyId,
-          1,
-          { page: this.paginationData.currentPageNumber, pageSize: 50, rowFilter: rowFilter }
+          this.state.userId,
+          { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize, rowFilter: rowFilter }
         );
 
         this.uploadResultData = resp.result.data;
@@ -278,6 +282,15 @@ export class ProcessFilePage extends BasePageComponent {
       ;
   }
 
+  showFormatErrors(entry: any) {
+    this.selectedRowErrorFlags = entry.formatFlags;
+    this.showErrorDialog = true;
+    this.ea.subscribeOnce("dialog:error:finish", () => {
+      this.showErrorDialog = false;
+      this.selectedRowErrorFlags = undefined;
+    })
+  }
+
   onFilterChanged() {
     const routeParams: any = {
       page: 1
@@ -295,7 +308,11 @@ export class ProcessFilePage extends BasePageComponent {
   }
 
   onSortChanged() {
-    const params: any = { page: this.paginationData.currentPageNumber, pageSize: 50 };
+    const params: any = { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize };
+
+    if (this.selectedFilter) {
+      params.rowFilter = this.selectedFilter;
+    }
 
     params.sortField = this.selectedSortFieldName;
     params.sortDirection = this.sortDirection;

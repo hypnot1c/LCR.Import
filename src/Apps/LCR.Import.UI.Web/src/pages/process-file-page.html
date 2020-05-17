@@ -1,10 +1,13 @@
 <template>
   <require from="components/pagination-component"></require>
   <require from="components/table-header-component"></require>
+  <require from="./components/error-dialog-component"></require>
+
   <require from="resources/value-converters/date-time-value-converter"></require>
   <require from="resources/value-converters/tg-direction-value-converter"></require>
   <require from="resources/binding-behaviors/intercept-binding-behavior"></require>
   <require from="resources/custom-attributes/date-picker-custom-attribute"></require>
+
   <require from="./partials/rows/approved-row.html"></require>
   <require from="./process-file-page.scss"></require>
 
@@ -279,7 +282,9 @@
                     </button>
                   </div>
                 </td>
-                <td if.bind="entry.formatFlags"></td>
+                <td if.bind="entry.formatFlags">
+                  <span uk-icon="file-text" uk-tooltip="Список ошибок" click.delegate="showFormatErrors(entry)" style="cursor: pointer;"></span>
+                </td>
               </tr>
             </tbody>
             <tbody if.bind="isLoadInProggress">
@@ -316,7 +321,7 @@
       <h2 class="uk-modal-title">Редактирование</h2>
       <form class="uk-form-horizontal">
         <div class="uk-margin">
-          <label class="uk-form-label" for="form-horizontal-text">Carrier</label>
+          <label class="uk-form-label">Carrier</label>
           <div class="uk-form-controls">
             <select class="uk-select uk-form-small"
                     value.bind="selectedOperatorId">
@@ -329,7 +334,7 @@
           </div>
         </div>
         <div class="uk-margin">
-          <label class="uk-form-label" for="form-horizontal-text">ValidUntil</label>
+          <label class="uk-form-label">ValidUntil</label>
           <div class="uk-form-controls uk-margin">
             <input id="validUntil" class="uk-input uk-form-small" type="text" />
           </div>
@@ -341,4 +346,5 @@
       </div>
     </div>
   </div>
+  <error-dialog-component if.bind="showErrorDialog" format-flags.bind="selectedRowErrorFlags"></error-dialog-component>
 </template>
