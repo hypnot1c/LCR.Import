@@ -52,7 +52,7 @@ namespace LCR.DataService
 
       Func<int, string> getFlagPart = (int flag) =>
       {
-        switch(flag)
+        switch (flag)
         {
           case 2:
             return "LCR_TGID IS NULL";
@@ -135,6 +135,90 @@ namespace LCR.DataService
       }
     }
 
+    public async Task MappedData_DetectUnchangedRowsAsync(decimal uploadHistoryId, decimal previousHploadHistoryId)
+    {
+      var query = @"
+        MERGE INTO
+	        UPLOAD_MAPPEDDATA trg
+        USING
+	        (
+		        SELECT
+			        cumd.ID
+		        FROM
+			        (
+				        SELECT
+					        r.DARAROWID,
+					        r.TRUNKGROUPNAME,
+					        c.*
+				        FROM
+					        UPLOAD_MAPPEDDATA c
+					        INNER JOIN
+						        UPLOAD_RAWDATA r
+						        ON
+							        c.UPLOADRAWDATAID = r.ID
+				        WHERE
+					        c.UPLOADHISTORYID = :uploadHistoryId
+			        ) cumd
+			        INNER JOIN
+				        (
+					        SELECT
+						        r.DARAROWID,
+						        r.TRUNKGROUPNAME,
+						        c.*
+					        FROM
+						        UPLOAD_MAPPEDDATA c
+						        INNER JOIN
+							        UPLOAD_RAWDATA r
+						        ON
+							        c.UPLOADRAWDATAID = r.ID
+					        WHERE
+						        c.UPLOADHISTORYID = :previousUploadHistoryId
+				        ) pumd
+				        ON
+					        cumd.DARAROWID = pumd.DARAROWID
+					        AND
+					        cumd.TRUNKGROUPNAME = pumd.TRUNKGROUPNAME
+		        WHERE
+			        pumd.APPROVED = 1
+			        OR
+			        (
+				        pumd.EXCLUDED = 0
+				        AND
+				        pumd.FLAGS = 64
+			        )
+			        AND
+			        (
+				        cumd.FILE_TGOPERATORID != pumd.FILE_TGOPERATORID
+				        OR
+				        cumd.FILE_DIRECTION != pumd.FILE_DIRECTION
+				        OR
+				        cumd.FILE_VALIDFROM != pumd.FILE_VALIDFROM
+				        OR
+				        cumd.FILE_VALIDUNTIL != pumd.FILE_VALIDUNTIL
+			        )
+	        ) src
+        ON
+	        (
+		        trg.ID = src.ID
+	        )
+        WHEN 
+	        MATCHED 
+	        THEN
+		        UPDATE
+		        SET
+			        FLAGS = 64
+      ";
+
+      using (var historySqlParam = new OracleParameter("uploadHistoryId", uploadHistoryId))
+      {
+        using (var prevHistorySqlParam = new OracleParameter("previousUploadHistoryId", previousHploadHistoryId))
+        {
+          await this.TPMContext.Database.ExecuteSqlCommandAsync(query, historySqlParam, prevHistorySqlParam);
+        }
+      }
+    }
+
+
     public async Task Import_SaveAsync(decimal uploadHistoryId)
     {
       var saveQuery = @"declare
@@ -146,7 +230,7 @@ namespace LCR.DataService
       using (var historySqlParam = new OracleParameter("uploadHistoryId", uploadHistoryId))
       {
         var historyEntry = await this.TPMContext.UploadHistory.FindAsync(uploadHistoryId);
-        if(historyEntry == null)
+        if (historyEntry == null)
         {
           throw new ArgumentNullException(nameof(historyEntry), "Upload history was not found");
         }

@@ -210,6 +210,9 @@ export class ProcessFilePage extends BasePageComponent {
   }
 
   async edit(entry: any) {
+    if (entry.formatFlags != null) {
+      return false;
+    }
     const dialogPromise = new Promise(async (res, rej) => {
       const el = document.getElementById('edit-dialog');
       const btnSave: HTMLButtonElement = el.querySelector("button.uk-button-primary");
@@ -300,6 +303,7 @@ export class ProcessFilePage extends BasePageComponent {
       routeParams.rowFilter = this.selectedFilter;
     }
 
+    routeParams.pageSize = this.paginationData.pageSize;
     routeParams.sortField = this.selectedSortFieldName;
     routeParams.sortDirection = this.sortDirection;
     routeParams.id = this.currentRouteParams.id;

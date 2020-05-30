@@ -97,10 +97,21 @@ namespace LCR.Import.Web.Api.Resources
       await this.TPMContext.SaveChangesAsync();
 
       await this.DataService.RawData_MapDataAsync(command.ImportHistoryId);
-
       await this.DataService.MappedData_SetFlagsAsync(command.ImportHistoryId);
 
-      historyEntry.Step = ImportStep.LogicControll;
+      var previousHistoryEntry = await this.TPMContext.UploadHistory
+        .Where(uh => uh.Step == ImportStep.Saved)
+        .Where(uh => uh.SwitchId == historyEntry.SwitchId)
+        .OrderByDescending(uh => uh.Id)
+        .FirstOrDefaultAsync()
+        ;
+
+      if(previousHistoryEntry != null)
+      {
+        await this.DataService.MappedData_DetectUnchangedRowsAsync(historyEntry.Id, previousHistoryEntry.Id);
+      }
+
+      historyEntry.Step = ImportStep.LogicControl;
 
       await this.TPMContext.SaveChangesAsync();
     }

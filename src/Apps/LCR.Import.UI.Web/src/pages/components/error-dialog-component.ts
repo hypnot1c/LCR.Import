@@ -10,15 +10,23 @@ export class ErrorDialogComponent extends BaseComponent {
   }
 
   @bindable formatFlags: number;
+  private isAttached: boolean;
 
   attached() {
     const el = document.getElementById('error-dialog');
+
+    if (!this.isAttached) {
+      this.isAttached = true;
+      UIkit.util.on("#error-dialog", "hidden", () => {
+        this.ea.publish("dialog:error:finish");
+      });
+    }
+
     UIkit.modal(el).show();
   }
 
   private onFinish() {
     const el = document.getElementById('error-dialog');
     UIkit.modal(el).hide();
-    this.ea.publish("dialog:error:finish");
   }
 }

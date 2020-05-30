@@ -4,7 +4,7 @@ namespace LCR.TPM.Model
   {
     FormatControl = 0,
     DataMapping = 1,
-    LogicControll = 2,
+    LogicControl = 2,
     Saved = 3
   }
 }

@@ -26,7 +26,6 @@ namespace LCR.TPM.Context.Configurations
       builder.Property(p => p.Flags).HasColumnName("FLAGS");
       builder.Property(p => p.Approved).HasColumnName("APPROVED");
       builder.Property(p => p.Excluded).HasColumnName("EXCLUDED");
-
       
       builder.HasOne(p => p.UploadHistory).WithMany(p => p.ImportMappedData).HasForeignKey(p => p.UploadHistoryId);
       builder.HasOne(p => p.ImportRawData)

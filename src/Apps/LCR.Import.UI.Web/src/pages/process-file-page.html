@@ -282,7 +282,7 @@
                     </button>
                   </div>
                 </td>
-                <td if.bind="entry.formatFlags">
+                <td if.bind="entry.formatFlags != null" style="min-width: 50px;">
                   <span uk-icon="file-text" uk-tooltip="Список ошибок" click.delegate="showFormatErrors(entry)" style="cursor: pointer;"></span>
                 </td>
               </tr>
@@ -298,7 +298,7 @@
             </tbody>
             <tbody if.bind="!isLoadInProggress && uploadResultData.length == 0">
               <tr>
-                <td colspan="15" class="uk-text-center">
+                <td colspan="16" class="uk-text-center">
                   Нет данных
                 </td>
               </tr>
