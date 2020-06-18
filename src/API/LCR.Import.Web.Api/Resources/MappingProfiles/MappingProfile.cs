@@ -12,7 +12,7 @@ namespace LCR.Import.Web.Api.Resources
       CreateMap<UploadHistoryModel, ImportSummaryViewModel>()
         .ForMember(d => d.SwitchName, opt => opt.Ignore())
         .ForMember(d => d.RowsCount, opt => opt.MapFrom(s => s.ImportRawData.Count))
-        .ForMember(d => d.DiffRowsCount, opt => opt.MapFrom(s => s.ImportMappedData.Count(md => (md.Flags & 2) == 0)))
+        .ForMember(d => d.DiffRowsCount, opt => opt.MapFrom(s => s.ImportMappedData.Count(md => (md.Flags & 2) == 0 && md.Flags != 64)))
         .ForMember(d => d.ErrorRowsCount, opt => opt.MapFrom(s => s.ImportRawData.Count(rd => rd.ImportFormatErrors != null)))
         ;
 
