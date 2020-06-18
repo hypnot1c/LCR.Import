@@ -58,7 +58,7 @@ namespace LCR.Import.Web.Api.Controllers
       switch (rowFilter)
       {
         case 1:
-          data = data.Where(i => i.FormatFlags == null && (i.LogicFlags == 2 || (i.LogicFlags != 0 && i.LogicFlags != 16 && i.FormatFlags != 64)) && i.Approved != true);
+          data = data.Where(i => i.FormatFlags == null && (i.LogicFlags == 2 || (i.LogicFlags != 0 && i.LogicFlags != 16 && i.LogicFlags != 64)) && i.Approved != true);
           break;
         case 2:
           data = data.Where(i => i.FormatFlags != null);

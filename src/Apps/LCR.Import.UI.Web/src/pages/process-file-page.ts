@@ -88,14 +88,23 @@ export class ProcessFilePage extends BasePageComponent {
       this.isLoadInProggress = true;
 
       params.rowFilter = this.selectedFilter == "null" ? null : this.selectedFilter;
-      const resp = await this.dataService.import.getResult(
-        this.state.import.currentHistoryId,
-        this.state.userId,
-        params
-      );
+
+      const [resp, resp2] = await Promise.all([
+        this.dataService.import.getResult(
+          this.state.import.currentHistoryId,
+          this.state.userId,
+          params
+        ),
+        this.dataService.import.isAllApproved(this.state.import.currentHistoryId)
+      ]);
 
       this.uploadResultData = resp.result.data;
       this.paginationData.totalPages = resp.result.totalPages;
+
+      if (resp2.status == "Ok") {
+        this.allRowsAreApproved = resp2.result;
+      }
+
       this.isLoadInProggress = false;
     }
   }
@@ -165,7 +174,7 @@ export class ProcessFilePage extends BasePageComponent {
   }
 
   private async statusCheck(historyId: number) {
-    const res = await this.dataService.import.checkStatus(historyId, 1);
+    const res = await this.dataService.import.checkStatus(historyId, this.state.userId);
     switch (res.historyStatus) {
       case 0:
         this.importStep = 0;
@@ -189,11 +198,18 @@ export class ProcessFilePage extends BasePageComponent {
         this.isLoadInProggress = true;
 
         const rowFilter = this.selectedFilter;
-        const resp = await this.dataService.import.getResult(
-          historyId,
-          this.state.userId,
-          { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize, rowFilter: rowFilter }
-        );
+        const [resp, resp2] = await Promise.all([
+          this.dataService.import.getResult(
+            historyId,
+            this.state.userId,
+            { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize, rowFilter: rowFilter }
+          ),
+          this.dataService.import.isAllApproved(this.state.import.currentHistoryId)
+        ]);
+
+        if (resp2.status == "Ok") {
+          this.allRowsAreApproved = resp2.result;
+        }
 
         this.uploadResultData = resp.result.data;
         this.paginationData.totalPages = resp.result.totalPages;

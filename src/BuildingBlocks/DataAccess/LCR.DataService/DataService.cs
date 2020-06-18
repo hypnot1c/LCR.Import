@@ -179,22 +179,24 @@ namespace LCR.DataService
 					        AND
 					        cumd.TRUNKGROUPNAME = pumd.TRUNKGROUPNAME
 		        WHERE
-			        pumd.APPROVED = 1
-			        OR
 			        (
-				        pumd.EXCLUDED = 0
-				        AND
-				        pumd.FLAGS = 64
-			        )
+						    pumd.APPROVED = 1
+			        	OR
+			        	(
+				        	pumd.EXCLUDED = 0
+				        	AND
+				        	pumd.FLAGS = 64
+			        	)
+					    )
 			        AND
 			        (
-				        cumd.FILE_TGOPERATORID != pumd.FILE_TGOPERATORID
-				        OR
-				        cumd.FILE_DIRECTION != pumd.FILE_DIRECTION
-				        OR
-				        cumd.FILE_VALIDFROM != pumd.FILE_VALIDFROM
-				        OR
-				        cumd.FILE_VALIDUNTIL != pumd.FILE_VALIDUNTIL
+				        cumd.FILE_TGOPERATORID = pumd.FILE_TGOPERATORID
+				        AND
+				        cumd.FILE_DIRECTION = pumd.FILE_DIRECTION
+				        AND
+				        cumd.FILE_VALIDFROM = pumd.FILE_VALIDFROM
+				        AND
+				        cumd.FILE_VALIDUNTIL = pumd.FILE_VALIDUNTIL
 			        )
 	        ) src
         ON

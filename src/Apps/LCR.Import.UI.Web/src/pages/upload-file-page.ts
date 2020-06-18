@@ -98,7 +98,7 @@ export class UploadFilePage extends BasePageComponent {
       this.uploadStatus = "Файл загружен";
 
       await this.store.dispatch(importStateActions.setCurrentHistoryId, resp.historyId);
-      this.router.navigateToRoute("process-file");
+      this.router.navigateToRoute("process-file", { rowFilter: 1 });
     }
   }
 

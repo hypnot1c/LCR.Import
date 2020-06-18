@@ -8,6 +8,7 @@ const {
   WatchIgnorePlugin
 } = require("webpack");
 
+const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const SpriteLoaderPlugin = require("svg-sprite-loader/lib/plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -171,6 +172,7 @@ module.exports = (env, argv) => {
       noParse: [/oidc-client/]
     },
     plugins: [
+      new WebpackCleanupPlugin(),
       new WatchIgnorePlugin([/scss\.d\.ts$/, "/node_modules/"]),
       new NormalModuleReplacementPlugin(/(.*)app-config(\.*)/, resource => {
         let cfgFileName = "app-config";
