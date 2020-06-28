@@ -21,6 +21,13 @@ export class ProcessFilePage extends BasePageComponent {
     protected store: Store<IAppState>
   ) {
     super("ProcessFilePage");
+    this.filters = {
+      rowFilter: null,
+      dateValid: null,
+      opName: null,
+      tgName: null,
+      dateValidPicker: undefined
+    };
   }
 
   state: IAppState;
@@ -38,9 +45,16 @@ export class ProcessFilePage extends BasePageComponent {
   allRowsAreApproved: boolean;
   operatorList: any[];
   selectedOperatorId: number;
-  selectedFilter: string;
   selectedRowErrorFlags: number;
   showErrorDialog: boolean;
+
+  filters: {
+    rowFilter: string;
+    tgName: string;
+    opName: string;
+    dateValid: string;
+    dateValidPicker: any;
+  };
 
   selectedSortFieldName: string;
   sortDirection: 'asc' | 'desc';
@@ -76,7 +90,12 @@ export class ProcessFilePage extends BasePageComponent {
 
     this.paginationData.pageSize = parseInt(params.pageSize);
     this.paginationData.currentPageNumber = parseInt(params.page);
-    this.selectedFilter = params.rowFilter;
+    this.filters.rowFilter = params.rowFilter;
+    if (params.dateValid) {
+      this.filters.dateValid = new Date(params.dateValid).toLocaleDateString();
+    }
+    this.filters.tgName = params.tgName;
+    this.filters.opName = params.opName;
 
     if (this.importStep != 2) {
       this.importStep = 0;
@@ -85,28 +104,12 @@ export class ProcessFilePage extends BasePageComponent {
       this.statusCheckInterval = window.setInterval(() => this.statusCheck(this.state.import.currentHistoryId), 2000);
     }
     else {
-      this.isLoadInProggress = true;
-
-      params.rowFilter = this.selectedFilter == "null" ? null : this.selectedFilter;
-
-      const [resp, resp2] = await Promise.all([
-        this.dataService.import.getResult(
-          this.state.import.currentHistoryId,
-          this.state.userId,
-          params
-        ),
-        this.dataService.import.isAllApproved(this.state.import.currentHistoryId)
-      ]);
-
-      this.uploadResultData = resp.result.data;
-      this.paginationData.totalPages = resp.result.totalPages;
-
-      if (resp2.status == "Ok") {
-        this.allRowsAreApproved = resp2.result;
-      }
-
-      this.isLoadInProggress = false;
+      await this.fetchData(params);
     }
+  }
+
+  attached() {
+    super.attached();
   }
 
   deactivate() {
@@ -117,6 +120,40 @@ export class ProcessFilePage extends BasePageComponent {
   flagFunc(method, update, value, flag) {
     value = flag && ((value & flag) != 0) ? 'diff' : '';
     update(value);
+  }
+
+  private async fetchData(params: any) {
+    this.isLoadInProggress = true;
+
+    this.collectFilters(params);
+
+    const [resp, resp2] = await Promise.all([
+      this.dataService.import.getResult(
+        this.state.import.currentHistoryId,
+        this.state.userId,
+        params
+      ),
+      this.dataService.import.isAllApproved(this.state.import.currentHistoryId)
+    ]);
+
+    this.uploadResultData = resp.result.data;
+    this.paginationData.totalPages = resp.result.totalPages;
+
+    if (resp2.status == "Ok") {
+      this.allRowsAreApproved = resp2.result;
+    }
+
+    if (!this.filters.dateValidPicker) {
+      const picker = new Pikaday({
+        field: document.querySelector('#filter-date-valid'),
+        firstDay: 1,
+        i18n: ruI18n,
+        format: "L"
+      });
+      this.filters.dateValidPicker = picker;
+    }
+
+    this.isLoadInProggress = false;
   }
 
   async approveRow(row: any) {
@@ -193,27 +230,10 @@ export class ProcessFilePage extends BasePageComponent {
         const summaryResp = await this.dataService.import.getImportSummary(this.state.import.currentHistoryId);
         this.summary = summaryResp.result;
 
-        this.importStep = 2;
+        await Promise.resolve().then(_ => this.importStep = 2);
 
-        this.isLoadInProggress = true;
+        await this.fetchData(this.currentRouteParams);
 
-        const rowFilter = this.selectedFilter;
-        const [resp, resp2] = await Promise.all([
-          this.dataService.import.getResult(
-            historyId,
-            this.state.userId,
-            { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize, rowFilter: rowFilter }
-          ),
-          this.dataService.import.isAllApproved(this.state.import.currentHistoryId)
-        ]);
-
-        if (resp2.status == "Ok") {
-          this.allRowsAreApproved = resp2.result;
-        }
-
-        this.uploadResultData = resp.result.data;
-        this.paginationData.totalPages = resp.result.totalPages;
-        this.isLoadInProggress = false;
         break;
       }
       default:
@@ -245,7 +265,7 @@ export class ProcessFilePage extends BasePageComponent {
         this.selectedOperatorId = op.id;
       }
 
-      var picker = new Pikaday({
+      const picker = new Pikaday({
         field: el.querySelector('#validUntil'),
         firstDay: 1,
         i18n: ruI18n,
@@ -310,35 +330,26 @@ export class ProcessFilePage extends BasePageComponent {
     })
   }
 
-  onFilterChanged() {
-    const routeParams: any = {
-      page: 1
-    };
+  onSortChanged() {
+    const params: any = { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize };
+    this.collectFilters(params);
 
-    if (this.selectedFilter) {
-      routeParams.rowFilter = this.selectedFilter;
-    }
+    this.router.navigateToRoute("process-file", params);
+  }
 
-    routeParams.pageSize = this.paginationData.pageSize;
-    routeParams.sortField = this.selectedSortFieldName;
-    routeParams.sortDirection = this.sortDirection;
-    routeParams.id = this.currentRouteParams.id;
+  applyFilters() {
+    const routeParams: any = { page: 1 };
+    this.collectFilters(routeParams);
 
     this.router.navigateToRoute("process-file", routeParams);
   }
 
-  onSortChanged() {
-    const params: any = { page: this.paginationData.currentPageNumber, pageSize: this.paginationData.pageSize };
-
-    if (this.selectedFilter) {
-      params.rowFilter = this.selectedFilter;
-    }
-
-    params.sortField = this.selectedSortFieldName;
-    params.sortDirection = this.sortDirection;
-    params.id = this.currentRouteParams.id;
-
-    this.router.navigateToRoute("process-file", params);
+  resetFilters() {
+    this.filters.dateValid = null;
+    this.filters.opName = null;
+    this.filters.tgName = null;
+    this.filters.rowFilter = "1";
+    this.applyFilters();
   }
 
   onTableHeaderClick(event: Event) {
@@ -363,6 +374,36 @@ export class ProcessFilePage extends BasePageComponent {
 
       this.onSortChanged();
     }
+  }
+
+  private collectFilters(params: any) {
+    if (this.filters.rowFilter) {
+      params.rowFilter = this.filters.rowFilter;
+    }
+    if (this.filters.tgName) {
+      params.tgName = this.filters.tgName;
+    }
+    if (this.filters.opName) {
+      params.opName = this.filters.opName;
+    }
+
+    if (this.filters.dateValid) {
+      let dateValid = this.filters.dateValid;
+      if (this.filters.dateValidPicker) {
+        const moment = this.filters.dateValidPicker.getMoment();
+        dateValid = moment._isValid ? moment.format("YYYY-MM-DDTHH:mm:ss") : null;
+      }
+      if (dateValid) {
+        params.dateValid = dateValid;
+      }
+    }
+
+    params.pageSize = this.paginationData.pageSize;
+    params.sortField = this.selectedSortFieldName;
+    params.sortDirection = this.sortDirection;
+    params.id = this.currentRouteParams.id;
+
+    return params
   }
 
   async lcrSave() {

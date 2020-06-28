@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LCR.DataService
@@ -24,7 +25,6 @@ namespace LCR.DataService
 
       return list;
     }
-
     public async Task RawData_MapDataAsync(decimal uploadHistoryId)
     {
       var dataMappingQuery = @"declare
@@ -38,7 +38,6 @@ namespace LCR.DataService
         await this.TPMContext.Database.ExecuteSqlCommandAsync(dataMappingQuery, historySqlParam);
       }
     }
-
     public async Task MappedData_SetFlagsAsync(decimal uploadHistoryId)
     {
       var setFlagsQuery = @"
@@ -83,8 +82,6 @@ namespace LCR.DataService
         }
       }
     }
-
-
     public async Task MappedData_SetRowFlagsAsync(decimal uploadHistoryId, decimal rawDataId)
     {
       var setFlagsQuery = @"
@@ -134,7 +131,6 @@ namespace LCR.DataService
         }
       }
     }
-
     public async Task MappedData_DetectUnchangedRowsAsync(decimal uploadHistoryId, decimal previousHploadHistoryId)
     {
       var query = @"
@@ -219,8 +215,6 @@ namespace LCR.DataService
         }
       }
     }
-
-
     public async Task Import_SaveAsync(decimal uploadHistoryId)
     {
       var saveQuery = @"declare
@@ -244,15 +238,31 @@ namespace LCR.DataService
         await this.TPMContext.SaveChangesAsync();
       }
     }
-
     public async Task<IEnumerable<OperatorModel>> Operator_GetListAsync()
     {
       return await this.TPMContext.Operators.ToListAsync();
     }
-
     public async Task<IEnumerable<UserQueryModel>> User_GetListAsync()
     {
       return await this.TPMContext.Users.ToListAsync();
+    }
+    public async Task<bool> Import_IsReadyForSavingAsync(decimal uploadHistoryId)
+    {
+      var rowsData = await this.TPMContext.ImportMappedData
+                      .Where(md => md.UploadHistoryId == uploadHistoryId)
+                      .Select(e => new { e.Id, e.Approved, e.Excluded, e.Flags })
+                      .ToListAsync()
+                      ;
+
+      var excludedRows = rowsData.Count(r => r.Excluded);
+      var newRows = rowsData.Count(r => r.Flags == 2);
+      var unchangedRows = rowsData.Count(r => r.Flags == 0);
+      var skippedRows = rowsData.Count(r => r.Flags == 64);
+      var approvedRows = rowsData.Count(r => r.Approved == true);
+
+      var IsReadyForSaving = (rowsData.Count - (excludedRows + newRows + skippedRows + unchangedRows)) == approvedRows;
+
+      return IsReadyForSaving;
     }
   }
 }

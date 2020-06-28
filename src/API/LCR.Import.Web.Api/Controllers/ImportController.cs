@@ -46,7 +46,9 @@ namespace LCR.Import.Web.Api.Controllers
     [HttpGet("{id}/user/{userId:int}/result")]
     public async Task<IActionResult> GetResult(decimal id, int userId = 1,
       int page = 1, int pageSize = 50, int? rowFilter = null,
-      string sortField = "dataRowId", string sortDirection = "asc"
+      string sortField = "dataRowId", string sortDirection = "asc",
+      string tgName = null, string opName = null,
+      DateTime? dateValid = null
       )
     {
       var data = this.TPMContext.ImportResults
@@ -68,6 +70,21 @@ namespace LCR.Import.Web.Api.Controllers
           break;
         default:
           break;
+      }
+
+      if (!String.IsNullOrEmpty(tgName))
+      {
+        tgName = tgName.Trim().ToLower();
+        data = data.Where(d => d.ChannelBundleName.ToLower().Contains(tgName));
+      }
+      if (!String.IsNullOrEmpty(opName))
+      {
+        opName = opName.Trim().ToLower();
+        data = data.Where(d => d.SwitchOperatorName.ToLower().Contains(opName) || d.PairedSwitchOperatorFullName.ToLower().Contains(opName));
+      }
+      if (dateValid != null)
+      {
+        data = data.Where(d => d.FileDateOpen <= dateValid && (d.FileDateClose == null || dateValid <= d.FileDateClose));
       }
 
       switch (sortField)
@@ -180,15 +197,9 @@ namespace LCR.Import.Web.Api.Controllers
     [HttpGet("{id}/is-all-approved")]
     public async Task<IActionResult> IsAllApproved(decimal id)
     {
-      var isAllApproved = !(await this.TPMContext.ImportMappedData
-        .Where(md => md.UploadHistoryId == id)
-        .Where(r => !r.Excluded)
-        .Where(r => r.Flags != 2)
-        .AnyAsync(r => (r.Approved == null || !r.Approved.Value))
-        )
-        ;
+      var isReadyForSaving = await this.DataService.Import_IsReadyForSavingAsync(id);
 
-      return Ok(new { Status = "Ok", result = isAllApproved });
+      return Ok(new { Status = "Ok", result = isReadyForSaving });
     }
 
     [HttpPost("{id}/row/{rowId}/approved")]
@@ -244,11 +255,7 @@ namespace LCR.Import.Web.Api.Controllers
     [HttpPost("{id}/lcr-save")]
     public async Task<IActionResult> LCRSave(decimal id)
     {
-      var isAllApproved = !(await this.TPMContext.ImportMappedData
-        .Where(md => md.UploadHistoryId == id)
-        .AnyAsync(r => (r.Approved == null || !r.Approved.Value) && !r.Excluded)
-        )
-        ;
+      var isAllApproved = await this.DataService.Import_IsReadyForSavingAsync(id);
 
       if (!isAllApproved)
       {
