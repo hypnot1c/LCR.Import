@@ -48,6 +48,7 @@ namespace LCR.Import.Web.Api.Controllers
       int page = 1, int pageSize = 50, int? rowFilter = null,
       string sortField = "dataRowId", string sortDirection = "asc",
       string tgName = null, string opName = null,
+      char? direction = null,
       DateTime? dateValid = null
       )
     {
@@ -85,6 +86,10 @@ namespace LCR.Import.Web.Api.Controllers
       if (dateValid != null)
       {
         data = data.Where(d => d.FileDateOpen <= dateValid && (d.FileDateClose == null || dateValid <= d.FileDateClose));
+      }
+      if(direction != null)
+      {
+        data = data.Where(d => d.FileDirection == direction);
       }
 
       switch (sortField)

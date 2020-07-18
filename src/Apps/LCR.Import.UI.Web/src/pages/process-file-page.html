@@ -75,6 +75,13 @@
             <input class="uk-input uk-form-small uk-form-width-medium" type="text" placeholder="Название ТГ..." value.bind="filters.tgName">
           </div>
           <div class="uk-padding-small">
+            <select class="uk-select uk-form-small uk-form-width-medium" value.bind="filters.direction">
+              <option value="">Вх./Исх.</option>
+              <option value="1">Вх.</option>
+              <option value="2">Исх.</option>
+            </select>
+          </div>
+          <div class="uk-padding-small">
             <input class="uk-input uk-form-small uk-form-width-medium" type="text" placeholder="Оператор..." value.bind="filters.opName">
           </div>
           <div class="uk-padding-small">

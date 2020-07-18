@@ -51,6 +51,7 @@ export class ProcessFilePage extends BasePageComponent {
   filters: {
     rowFilter: string;
     tgName: string;
+    direction: string;
     opName: string;
     dateValid: string;
     dateValidPicker: any;
@@ -96,6 +97,7 @@ export class ProcessFilePage extends BasePageComponent {
     }
     this.filters.tgName = params.tgName;
     this.filters.opName = params.opName;
+    this.filters.direction = params.direction;
 
     if (this.importStep != 2) {
       this.importStep = 0;
@@ -348,6 +350,7 @@ export class ProcessFilePage extends BasePageComponent {
     this.filters.dateValid = null;
     this.filters.opName = null;
     this.filters.tgName = null;
+    this.filters.direction = null;
     this.filters.rowFilter = "1";
     this.applyFilters();
   }
@@ -385,6 +388,9 @@ export class ProcessFilePage extends BasePageComponent {
     }
     if (this.filters.opName) {
       params.opName = this.filters.opName;
+    }
+    if (this.filters.direction) {
+      params.direction = this.filters.direction;
     }
 
     if (this.filters.dateValid) {
