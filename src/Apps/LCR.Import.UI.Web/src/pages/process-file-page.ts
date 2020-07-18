@@ -25,6 +25,7 @@ export class ProcessFilePage extends BasePageComponent {
       rowFilter: null,
       dateValid: null,
       opName: null,
+      direction: null,
       tgName: null,
       dateValidPicker: undefined
     };
