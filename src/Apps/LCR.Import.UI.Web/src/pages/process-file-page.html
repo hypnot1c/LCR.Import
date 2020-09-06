@@ -198,7 +198,7 @@
                 <td if.bind="!entry.formatFlags">
                   ${entry.fileDirection == '1' ? 'I' : 'O'}
                 </td>
-                <td else>
+                <td else class.bind="entry.logicFlags & intercept:flagFunc:16">
                   ${entry.direction}
                 </td>
 
