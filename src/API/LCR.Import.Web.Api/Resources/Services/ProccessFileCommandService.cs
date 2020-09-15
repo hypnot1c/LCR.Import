@@ -64,6 +64,12 @@ namespace LCR.Import.Web.Api.Resources
                 continue;
               }
 
+              if (!String.IsNullOrWhiteSpace(rawData.DirectionType) && rawData.DirectionType.ToLower().Contains("тестов"))
+              {
+                this.Logger.LogInformation("Row {0} is apparently a test row, skipping...", rawData.DataRowId);
+                continue;
+              }
+
               var result = validator.Validate(rawData);
 
               if (!result.IsValid)
