@@ -178,7 +178,7 @@ namespace LCR.DataService
 			        (
 						    pumd.APPROVED = 1
 			        	OR
-                pumd.EXCLUDED = 0
+                pumd.EXCLUDED = 1
 				        OR
 				        pumd.FLAGS = 64
 					    )
